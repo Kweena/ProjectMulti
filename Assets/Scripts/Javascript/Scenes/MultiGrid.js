@@ -166,5 +166,13 @@ function MultiGrid()
 		}
 	}
 
+	this.Scoring = function()
+	{
+		ctx.font = '40px Arial';
+		ctx.textAlignLast = 'center';
+		ctx.fillStyle = 'black';
+		ctx.fillText('Scoring', 100, 100);
+	}
+
 	this.Awake()
 }
