@@ -35,7 +35,8 @@ var ImagesPath =
 	// { name:"monImage",path: "background/image.png"},
 	{name: "ItemPoint", path: "MultiColor/greenCrystal.png"},
 	{name: "Player", path: "MultiColor/PlayerRed.png"},
-	{name: "Tiles", path: "MultiColor/TilesGrey.png"}
+	{name: "Tiles", path: "MultiColor/TilesGrey.png"},
+	{name: "Panel", path: "MultiColor/panel.png"}
 
 ];
 var Images = {};

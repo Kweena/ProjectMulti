@@ -129,6 +129,7 @@ function MultiGrid()
 		if (!Application.GamePaused) 
 		{
 			//Show UI
+			this.Scoring();
 		} 
 		else 
 		{
@@ -171,7 +172,7 @@ function MultiGrid()
 		ctx.font = '40px Arial';
 		ctx.textAlignLast = 'center';
 		ctx.fillStyle = 'black';
-		ctx.fillText('Scoring', 100, 100);
+		ctx.fillText('Scoring', canvas.width - 300, 50);
 	}
 
 	this.Awake()

@@ -26,40 +26,27 @@
  *
  *
  * */
-function Player(_grid,_color,_pseudo) 
+function ScorePanel(_player,_x,_y) 
 {
-	this.name = "Player";
+	this.name = "ScorePanel";
 	this.enabled = true;
 	this.started = false;
 	this.rendered = true;
 	this.fixedToCamera = true;
-	this.lastMove = Time.Time;
-	this.color = _color;
-	this.isMoving = false;
-	this.speed = 200;
-	this.score = 0;
-	
-	this.Grid = _grid;
-	this.pseudo = _pseudo || "Boule à facette"; 
-	
+	this.Player = _player;
+
 	this.MouseOffset = new Vector();
 
 	this.Parent = null;
 	
 	this.Transform = {};
 	this.Transform.RelativePosition = new Vector();
-	this.Transform.Position = new Vector();
-	this.Transform.Size = new Vector(36,45);
+	this.Transform.Position = new Vector(_x,_y);
+	this.Transform.Size = new Vector(55,12);
 	this.Transform.RelativeScale = new Vector(1,1);
 	this.Transform.Scale = new Vector(1,1);
 	this.Transform.Pivot = new Vector(.5,.5);
 	this.Transform.angle = 0;
-	this.Transform.IndexPosition = new Vector(0,0);
-
-	//Tween
-	this.StartPosition = new Vector();
-	this.EndPosition = new Vector();
-	this.nextIndex = new Vector();
 
 	/**
 	 * @function SetPosition
@@ -339,7 +326,7 @@ function Player(_grid,_color,_pseudo)
 	{
 		if (!this.started) {
 			// operation start
-			this.Renderer.Material.Source = Images["Player"];
+			this.Renderer.Material.Source = Images["Panel"];
 
 			if (this.Physics.colliderIsSameSizeAsTransform) 
 			{
@@ -367,12 +354,31 @@ function Player(_grid,_color,_pseudo)
 	{
 		if (this.enabled) 
 		{
-			if (!this.isMoving) 
+			if (this.Parent != null) 
 			{
-				this.Transform.Position.x = this.Transform.IndexPosition.x * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.x; 
-				this.Transform.Position.y = this.Transform.IndexPosition.y * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.y; 
+				this.Transform.Position.x = this.Transform.RelativePosition.x + this.Parent.Transform.Position.x;
+				this.Transform.Position.y = this.Transform.RelativePosition.y + this.Parent.Transform.Position.y;
+
+				this.Transform.Scale.x = this.Transform.RelativeScale.x * this.Parent.Transform.Scale.x;
+				this.Transform.Scale.y = this.Transform.RelativeScale.y * this.Parent.Transform.Scale.y;
+			} 
+			else 
+			{
+				this.Transform.Position.x = this.Transform.RelativePosition.x;
+				this.Transform.Position.y = this.Transform.RelativePosition.y;
+
+				this.Transform.Scale.x = this.Transform.RelativeScale.x;
+				this.Transform.Scale.y = this.Transform.RelativeScale.y;
 			}
-			
+			if (Application.LoadedScene.CurrentCamera != null) 
+			{
+				Application.LoadedScene.CurrentCamera.Start();
+				if (!this.fixedToCamera) 
+				{
+					this.Transform.Position.x -= Application.LoadedScene.CurrentCamera.Transform.Position.x;
+					this.Transform.Position.y -= Application.LoadedScene.CurrentCamera.Transform.Position.y;
+				}
+			}
 			
 			this.Update();
 		}
@@ -387,87 +393,9 @@ function Player(_grid,_color,_pseudo)
 	 * */
 	this.Update = function() 
 	{
-		//refresh
-		if (Input.KeysDown[9]) 
-		{
-			location.reload();
-		}
-
-		if (!this.isMoving) 
-		{
-			//left
-			if (Input.KeysDown[37] && Physics.TileCollision(this.Grid.Tiles, Application.LoadedScene.WalkableTiles, new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 4)) 
-			{
-				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
-				this.nextIndex = new Vector(this.Transform.IndexPosition.x - 1, this.Transform.IndexPosition.y);
-				this.EndPosition = this.IndexToPixel(this.nextIndex);
-				this.isMoving = true;
-			}
-			//right
-			else if (Input.KeysDown[39] && Physics.TileCollision(this.Grid.Tiles, Application.LoadedScene.WalkableTiles, new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 2)) 
-			{
-				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
-				this.nextIndex = new Vector(this.Transform.IndexPosition.x + 1, this.Transform.IndexPosition.y);
-				this.EndPosition = this.IndexToPixel(this.nextIndex);
-				this.isMoving = true;
-			}
-			//up
-			else if (Input.KeysDown[38] && Physics.TileCollision(this.Grid.Tiles, Application.LoadedScene.WalkableTiles, new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 1)) 
-			{
-				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
-				this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y - 1);
-				this.EndPosition = this.IndexToPixel(this.nextIndex);
-				this.isMoving = true;
-			}
-			//down
-			else if (Input.KeysDown[40] && Physics.TileCollision(this.Grid.Tiles, Application.LoadedScene.WalkableTiles, new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 3)) 
-			{
-				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
-				this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y + 1);
-				this.EndPosition = this.IndexToPixel(this.nextIndex);
-				this.isMoving = true;
-			}
-		}
-		else
-		{
-			this.Transform.Position.x = Tween.TweenGrid(this.Transform.Position.x, this.StartPosition.x, this.EndPosition.x, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
-			this.Transform.Position.y = Tween.TweenGrid(this.Transform.Position.y, this.StartPosition.y, this.EndPosition.y, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
-			
-			var middle = Math.abs( (this.EndPosition.x - this.StartPosition.x) / 2 )+ ( (this.EndPosition.y - this.StartPosition.y) / 2 );
-			var pos = Math.abs(this.Transform.Position.x - this.StartPosition.x + this.Transform.Position.y - this.StartPosition.y );
-
-			if ( pos < middle ) 
-			{
-				var t = Tween.TweenGrid(this.Transform.Scale.x, 1, 1.5, Time.deltaTime,0.001);
-				this.Transform.Scale.x = t;
-				this.Transform.Scale.y = t;
-			}
-			else
-			{
-				var t = Tween.TweenGrid(this.Transform.Scale.x, 1.5, 1, Time.deltaTime,0.001);	
-				this.Transform.Scale.x = t;
-				this.Transform.Scale.y = t;
-			}
-
-
-			if (this.Transform.Position.x == this.EndPosition.x && this.Transform.Position.y == this.EndPosition.y  ) 
-			{
-				this.isMoving = false;
-				this.Transform.IndexPosition = this.nextIndex;
-				var index = IndexFromCoord(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y, this.Grid.cases);
-
-				if (this.Grid.Color[index] != this.Color) 
-				{
-					this.Grid.Color[index] = this.color;
-					this.Grid.ColorSize[index] = 0;
-				}
-			}
-		}
-
+		this.Renderer.Draw();
 		this.PostUpdate();	
 	};
-
-
 	/**
 	 * @function PostUpdate
 	 * @memberof GameObjects/GameObjects
@@ -478,9 +406,6 @@ function Player(_grid,_color,_pseudo)
 	 * */
 	this.PostUpdate = function() 
 	{
-		// ctx.fillStyle = "black";
-		// ctx.fillRect(this.Transform.Position.x,this.Transform.Position.y,20,20);
-		this.Renderer.Draw();
 
 		if (Application.debugMode) {
 			Debug.DebugObject(this);
@@ -497,7 +422,11 @@ function Player(_grid,_color,_pseudo)
 	 * */
 	this.GUI = function() 
 	{
-		
+		ctx.font = 10 * this.Transform.Scale.y + 'px Arial';
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillStyle = this.Player.color;
+		ctx.fillText(this.Player.pseudo, this.Transform.Position.x, this.Transform.Position.y);
 	}
 
 	/**
@@ -537,14 +466,6 @@ function Player(_grid,_color,_pseudo)
 	{
 		this.Physics.countHovered = 0;
 	}
-	this.IndexToPixel = function (_position) 
-	{
-		var v = new Vector();
-		v.x = _position.x * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.x; 
-		v.y = _position.y * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.y; 
-		return v;
-	}
 
 	this.Awake();
 }
-
