@@ -199,5 +199,43 @@ var Tween =
             var s = Tween.Bounce.InOut(timer.currentTime, _startValue, _changeInValue, _duration );
         });
          
+    },
+    /*  ATTENTION PSEUDOCODE
+
+    function Tween (current, departure, arrival, delta, tolerence)
+    {   
+        //to right
+        if( departure - arrival < delta )
+        {
+            return delta + current;
+        }
+        //to left
+        if( departure - arrival > delta)
+        {
+            return delta - current;
+        }
+        if(Math.abs(departure - arrival) < tolerence )
+        {
+            return arrival;
+        }
+
+        //bisou
+    }*/
+
+    TweenGrid : function(_current, _departure, _arrival, _delta, _tolerence)
+    {
+        if(Math.abs(_arrival - _current) < _delta + _tolerence )
+        {
+            return _arrival;
+        }
+        if( _departure < _arrival )
+        {
+            return _current + _delta ;
+        }
+        //to left
+        if( _departure > _arrival )
+        {
+            return _current - _delta;
+        }
     }
 };

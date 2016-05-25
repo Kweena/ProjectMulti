@@ -15,26 +15,31 @@
 function MultiGrid() 
 {
 	this.name = "MultiGrid";
-	this.GameObjects =[];
+	//this.GameObjects =[];
 	this.Groups = [];
 	this.Cameras = [];
 	this.CurrentCamera = null;
 	this.AlphaMask = null;
 	this.started = false;
+	this.offsetGrid = new Vector(0,0);
+	this.WalkableTiles = [0];
+	this.ColorById = [];
 
-	this.players = 0;
+	this.Players = [];
+	this.Items = [];
 
-	this.Grid = null;
+
 	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
 	var smaller = canvas.width < canvas.height ? canvas.width : canvas.height;
 	if(canvas.width > canvas.height)
 	{
-		this.Grid = new Grid((bigger - smaller) / 2, 0, smaller, 4);
+		this.offsetGrid.x = (bigger - smaller) / 2;
 	}
 	else
-	{
-		this.Grid = new Grid(0, (bigger - smaller) / 2, smaller, 4);		
+	{	
+		this.offsetGrid.y = (bigger - smaller) / 2;
 	}
+	this.Grid = new Grid(this.offsetGrid.x, this.offsetGrid.y, smaller, 4);
 
 
 	//this.WorldSize = new Vector(4096,4096);
@@ -58,6 +63,11 @@ function MultiGrid()
 		{
 			Time.SetTimeWhenSceneBegin();
 			// operation start
+			var p = new Player(this.Grid, "#BADA55");
+			//this.GameObjects.push(p);
+			this.Players.push(p);
+			var item = new ItemPoint(2,2)
+			this.Items.push(item);
 			this.started = true;
 			Print('System:Scene ' + this.name + " Started !");
 			Time.SetTimeWhenSceneLoaded();
@@ -74,15 +84,37 @@ function MultiGrid()
 		{
 			this.Grid.Draw();
 
-			for (var i = 0; i < this.GameObjects.length; i++) 
+			for (var i = 0; i < this.Items.length; i++) 
 			{
-				this.GameObjects[i].Start();
+				this.Items[i].Start();
 			}
-			for (var i = 0; i < this.Groups.length; i++) 
+			for (var i = 0; i < this.Players.length; i++) 
 			{
-				this.Groups[i].Start();
+				this.Players[i].Start();
+			}
+
+			for (var i = 0; i < this.Players.length; i++) 
+			{
+				for (var j = 0; j < this.Items.length; j++) 
+				{
+					if (this.Players[i].Transform.IndexPosition.x == this.Items[j].Transform.IndexPosition.x && this.Players[i].Transform.IndexPosition.y == this.Items[j].Transform.IndexPosition.y ) 
+					{
+						this.Items.splice(j,1);
+						j--;
+						for (var k = 0; k < this.Grid.Color.length; k++) 
+						{
+							if (this.Grid.Color[k] == this.Players[i].color) 
+							{
+								delete this.Grid.Color[k];
+								this.Players[i].score ++;
+								console.log(this.Players[i].score)
+							}
+						}
+					}
+				}
 			}
 		}
+
 		if (Application.debugMode) 
 		{
 			Debug.DebugScene();
@@ -106,10 +138,13 @@ function MultiGrid()
 
 	this.AddPlayer = function()
 	{
-		this.players ++;
-		if(this.players >= 2)
+		var player = new Player(this.Grid,Math.Random.ColorHEX());
+		//this.GameObjects.push(player);
+		this.Players.push(player);
+
+		if(this.Players.length >= 2)
 		{
-			this.Grid.cases = this.players * 2;
+			this.Grid.ChangeSize(this.Players.length * 2);
 		}
 		else
 		{
@@ -117,12 +152,13 @@ function MultiGrid()
 		}
 	}
 
-	this.RemovePlayer = function()
+	this.RemovePlayer = function(_id)
 	{
-		this.players --;
-		if(this.players >= 2)
+		//this.GameObjects.splice(this.player)
+		//Todo - remove player array
+		if(this.Players.length >= 2)
 		{
-			this.Grid.cases = this.players * 2;
+			this.Grid.ChangeSize(this.Players.length * 2);
 		}
 		else
 		{

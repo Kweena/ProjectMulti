@@ -16,6 +16,8 @@ function Grid(_x, _y, _length, _cases)
 	this.cases = _cases;
 	this.caseLength = this.length / this.cases
 	this.Tiles = new Array(this.cases * this.cases).fill(0);
+	this.Color = new Array(this.cases * this.cases);
+	this.ColorSize = new Array(this.cases * this.cases).fill(0);
 	this.BestPath = null;
 
 /**
@@ -28,17 +30,21 @@ function Grid(_x, _y, _length, _cases)
 	{
 		ctx.strokeStyle = '#000000';
 		ctx.fillStyle = '#000000';
-		this.caseLength = this.length / this.cases;
 		for (var i = 0; i * this.caseLength < this.length; i++) 
 		{
 			for (var j = 0; j * this.caseLength < this.length; j++) 
 			{
-				ctx.strokeRect(this.x + i * this.caseLength, this.y + j * this.caseLength, this.caseLength, this.caseLength);
+				ctx.drawImage(Images["Tiles"],this.x + i * this.caseLength,this.y + j * this.caseLength,this.caseLength, this.caseLength);
 				// Draw Obstacles
-				if (this.Tiles[j * this.cases + i] == 1) {
-					ctx.fillStyle = '#000000';
+				if (this.Color[j * this.cases + i] != undefined) 
+				{
+					ctx.globalAlpha = 0.5;
+					ctx.fillStyle = this.Color[j * this.cases + i];
 					ctx.fillRect(this.x + i * this.caseLength, this.y + j * this.caseLength, this.caseLength, this.caseLength);
+					ctx.globalAlpha = 1;
 				}
+				// ctx.strokeRect(this.x + i * this.caseLength, this.y + j * this.caseLength, this.caseLength, this.caseLength);
+
 			}	
 		}
 	}
@@ -76,6 +82,15 @@ function Grid(_x, _y, _length, _cases)
 				}	
 			}
 		}
+	}
+
+	this.ChangeSize = function(_nbrCase)
+	{
+		this.cases = _nbrCase;
+		this.caseLength = this.length / this.cases;
+		this.Tiles = new Array(this.cases * this.cases).fill(0);
+		this.Color = new Array(this.cases * this.cases);
+		this.ColorSize = new Array(this.cases * this.cases).fill(0);
 	}
 }
 
