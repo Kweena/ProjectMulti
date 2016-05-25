@@ -12,9 +12,9 @@
  * 
  * @return {Scene}
  * */
-function Scene() 
+function MultiGrid() 
 {
-	this.name = "Model";
+	this.name = "MultiGrid";
 	this.GameObjects =[];
 	this.Groups = [];
 	this.Cameras = [];
@@ -22,7 +22,22 @@ function Scene()
 	this.AlphaMask = null;
 	this.started = false;
 
-	this.WorldSize = new Vector(4096,4096);
+	this.players = 0;
+
+	this.Grid = null;
+	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
+	var smaller = canvas.width < canvas.height ? canvas.width : canvas.height;
+	if(canvas.width > canvas.height)
+	{
+		this.Grid = new Grid((bigger - smaller) / 2, 0, smaller, 4);
+	}
+	else
+	{
+		this.Grid = new Grid(0, (bigger - smaller) / 2, smaller, 4);		
+	}
+
+
+	//this.WorldSize = new Vector(4096,4096);
 
 	/**
 	 * Called at the instruction new Scene().
@@ -55,8 +70,10 @@ function Scene()
 	 * */
 	this.Update = function() 
 	{
-		if (!Application.GamePaused) 
+		if (!Application.gamePaused) 
 		{
+			this.Grid.Draw();
+
 			for (var i = 0; i < this.GameObjects.length; i++) 
 			{
 				this.GameObjects[i].Start();
@@ -84,6 +101,32 @@ function Scene()
 		else 
 		{
 			// Show pause menu
+		}
+	}
+
+	this.AddPlayer = function()
+	{
+		this.players ++;
+		if(this.players >= 2)
+		{
+			this.Grid.cases = this.players * 2;
+		}
+		else
+		{
+			console.log("Wait for another player");
+		}
+	}
+
+	this.RemovePlayer = function()
+	{
+		this.players --;
+		if(this.players >= 2)
+		{
+			this.Grid.cases = this.players * 2;
+		}
+		else
+		{
+			console.log("Wait for it");
 		}
 	}
 

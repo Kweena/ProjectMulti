@@ -28,6 +28,7 @@ function Grid(_x, _y, _length, _cases)
 	{
 		ctx.strokeStyle = '#000000';
 		ctx.fillStyle = '#000000';
+		this.caseLength = this.length / this.cases;
 		for (var i = 0; i * this.caseLength < this.length; i++) 
 		{
 			for (var j = 0; j * this.caseLength < this.length; j++) 

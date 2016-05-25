@@ -55,7 +55,7 @@ function Scene()
 	 * */
 	this.Update = function() 
 	{
-		if (!Application.GamePaused) 
+		if (!Application.gamePaused) 
 		{
 			for (var i = 0; i < this.GameObjects.length; i++) 
 			{

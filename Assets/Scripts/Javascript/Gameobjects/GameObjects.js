@@ -281,11 +281,11 @@ function GameObject()
 	 * */
 	this.SetSpriteSheet = function(_img, _sizeFrame, _animationLength) 
 	{
-	    if(typeof _img != 'string') PrintErr("Parameter img in SetSpriteSheet");
+	    //if(typeof _img != 'string') PrintErr("Parameter img in SetSpriteSheet");
 		if(!(_sizeFrame instanceof(Vector))) PrintErr("Parameter sizeFrame in SetSpriteSheet");
 	    if(typeof _animationLength != 'number') PrintErr("Parameter animationLength in SetSpriteSheet");
 		this.Renderer.isSpriteSheet = true;
-		this.Animation.totalAnimationLength = _animationLength || 0.5;
+		this.Renderer.Animation.totalAnimationLength = _animationLength || 0.5;
 		this.Renderer.Material.SizeFrame = _sizeFrame;
  		this.Renderer.Material.Source = _img;
  		this.Renderer.Material.CurrentFrame = new Vector(0,0);

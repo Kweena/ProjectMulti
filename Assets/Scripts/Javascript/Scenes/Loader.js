@@ -39,7 +39,7 @@ function Loader()
 		{
 			Time.SetTimeWhenGameBegin();
 			// operation start
-			Scenes["SceneHub"] = new SceneHub();
+/*			Scenes["SceneHub"] = new SceneHub();
 			Scenes["SceneInput"] = new SceneInput();
 			Scenes["SceneCamera"] = new SceneCamera();
 			Scenes["SceneGroup"] = new SceneGroup();
@@ -52,7 +52,8 @@ function Loader()
 			Scenes["ScenePhysics_Debug"]  = new ScenePhysics_Debug();
 			Scenes["ScenePathFinding"]  = new ScenePathFinding();
 			Scenes["SceneSave"]  = new SceneSave();
-			Scenes["SceneIA"]  = new SceneIA();			
+			Scenes["SceneIA"]  = new SceneIA();	*/	
+			Scenes["MultiGrid"] = new MultiGrid();
 
 			LoadImages();
 			this.started = true;
