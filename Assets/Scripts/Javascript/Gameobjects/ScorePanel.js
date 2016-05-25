@@ -44,7 +44,7 @@ function ScorePanel(_player,_x,_y)
 	this.Transform.Position = new Vector(_x,_y);
 	this.Transform.Size = new Vector(55,12);
 	this.Transform.RelativeScale = new Vector(1,1);
-	this.Transform.Scale = new Vector(1,1);
+	this.Transform.Scale = new Vector(4,4);
 	this.Transform.Pivot = new Vector(.5,.5);
 	this.Transform.angle = 0;
 

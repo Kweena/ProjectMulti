@@ -16,17 +16,13 @@ function MultiGrid()
 {
 	this.name = "MultiGrid";
 	//this.GameObjects =[];
-	this.Groups = [];
-	this.Cameras = [];
-	this.CurrentCamera = null;
-	this.AlphaMask = null;
 	this.started = false;
 	this.offsetGrid = new Vector(0,0);
 	this.WalkableTiles = [0];
-	this.ColorById = [];
 
 	this.Players = [];
 	this.Items = [];
+	this.Scores =  [];
 
 
 	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
@@ -64,11 +60,17 @@ function MultiGrid()
 			Time.SetTimeWhenSceneBegin();
 			// operation start
 			var p = new Player(this.Grid, "#BADA55");
-			//this.GameObjects.push(p);
 			this.Players.push(p);
+			
 			var item = new ItemPoint(2,2)
 			this.Items.push(item);
+
+			var score = new ScorePanel(p,400,400);
+			this.Scores.push(score);
+
 			this.started = true;
+
+
 			Print('System:Scene ' + this.name + " Started !");
 			Time.SetTimeWhenSceneLoaded();
 		}
@@ -91,6 +93,10 @@ function MultiGrid()
 			for (var i = 0; i < this.Players.length; i++) 
 			{
 				this.Players[i].Start();
+			}
+			for (var i = 0; i < this.Scores.length; i++) 
+			{
+				this.Scores[i].Start();
 			}
 
 			for (var i = 0; i < this.Players.length; i++) 
