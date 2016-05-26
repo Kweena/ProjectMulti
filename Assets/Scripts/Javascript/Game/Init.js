@@ -93,7 +93,7 @@ function ImageLoaded(_imageLoaded)
 		Application.LoadedScene = Scenes["SceneName"];
 	*/
 
-	Application.LoadedScene = Scenes["Ending"];
+	Application.LoadedScene = Scenes["Title"];
 }
 /**
  * 

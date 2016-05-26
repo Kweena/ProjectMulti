@@ -353,10 +353,12 @@ function ItemPoint(_x,_y)
 	this.PreUpdate = function() 
 	{
 		if (this.enabled) 
-		{
-			this.Transform.Position.x = this.Transform.IndexPosition.x * Application.LoadedScene.Grid.caseLength + Application.LoadedScene.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.x; 
-			this.Transform.Position.y = this.Transform.IndexPosition.y * Application.LoadedScene.Grid.caseLength + Application.LoadedScene.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.y; 
-			
+		{	
+			if(Application.LoadedScene.name == "MultiGrid")
+			{
+				this.Transform.Position.x = this.Transform.IndexPosition.x * Application.LoadedScene.Grid.caseLength + Application.LoadedScene.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.x; 
+				this.Transform.Position.y = this.Transform.IndexPosition.y * Application.LoadedScene.Grid.caseLength + Application.LoadedScene.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.y; 
+			}
 			this.Update();
 		}
 			
