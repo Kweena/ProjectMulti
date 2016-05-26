@@ -129,27 +129,7 @@ function MultiGrid()
 			{
 				this.Scores[i].Start();
 			}
-
-			for (var i = 0; i < this.Players.length; i++) 
-			{
-				for (var j = 0; j < this.Items.length; j++) 
-				{
-					if (this.Players[i].Transform.IndexPosition.x == this.Items[j].Transform.IndexPosition.x && this.Players[i].Transform.IndexPosition.y == this.Items[j].Transform.IndexPosition.y ) 
-					{
-						this.Items.splice(j,1);
-						j--;
-						for (var k = 0; k < this.Grid.Color.length; k++) 
-						{
-							if (this.Grid.Color[k] == this.Players[i].color) 
-							{
-								delete this.Grid.Color[k];
-								this.Players[i].score ++;
-							}
-						}
-						this.SortScore(this.Players[i]);
-					}
-				}
-			}
+			this.CheckCollisionItems();
 		}
 
 		if (Application.debugMode) 
@@ -170,6 +150,30 @@ function MultiGrid()
 		else 
 		{
 			// Show pause menu
+		}
+	}
+
+	this.CheckCollisionItems = function()
+	{
+		for (var i = 0; i < this.Players.length; i++) 
+		{
+			for (var j = 0; j < this.Items.length; j++) 
+			{
+				if (this.Players[i].Transform.IndexPosition.x == this.Items[j].Transform.IndexPosition.x && this.Players[i].Transform.IndexPosition.y == this.Items[j].Transform.IndexPosition.y ) 
+				{
+					this.Items.splice(j,1);
+					j--;
+					for (var k = 0; k < this.Grid.Color.length; k++) 
+					{
+						if (this.Grid.Color[k] == this.Players[i].color) 
+						{
+							delete this.Grid.Color[k];
+							this.Players[i].score ++;
+						}
+					}
+					this.SortScore(this.Players[i]);
+				}
+			}
 		}
 	}
 
