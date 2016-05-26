@@ -399,6 +399,7 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 
 		if (!this.isMoving) 
 		{
+			this.Renderer.Material.Source = Images["Player"];
 			//left
 			if (Input.KeysDown[37] && Physics.TileCollision(this.Grid.Tiles, Application.LoadedScene.WalkableTiles, new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 4)) 
 			{
@@ -434,6 +435,8 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 		}
 		else
 		{
+			this.Renderer.Material.Source = Images["PlayerJump"];
+
 			this.Transform.Position.x = Tween.TweenGrid(this.Transform.Position.x, this.StartPosition.x, this.EndPosition.x, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
 			this.Transform.Position.y = Tween.TweenGrid(this.Transform.Position.y, this.StartPosition.y, this.EndPosition.y, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
 			
