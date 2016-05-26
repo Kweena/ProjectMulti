@@ -24,7 +24,7 @@ function MultiGrid()
 	this.Items = [];
 	this.Scores =  [];
 	this.newScore = null;
-	this.timer = new Timer(120);
+	this.timer = new Timer(5);
 
 
 	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
@@ -254,7 +254,7 @@ function MultiGrid()
 		if(t == 0)
 		{
 			//alert(this.Scores)
-			Scenes["Ending"] = new Ending();
+			Scenes["Ending"] = new Ending(this.Scores);
 			Application.LoadedScene = Scenes["Ending"]; 
 		}
 		
