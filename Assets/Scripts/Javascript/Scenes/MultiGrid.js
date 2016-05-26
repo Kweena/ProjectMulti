@@ -71,6 +71,11 @@ function MultiGrid()
 			p1.score = 2;
 			p2.pseudo = "Kweena";
 			p2.score = 1;
+
+			var scaling = (this.Grid.caseLength / Images["Player"].width) * 0.5; 
+			p.Transform.Scale.Mul(scaling);
+			p1.Transform.Scale.Mul(scaling);
+			p2.Transform.Scale.Mul(scaling);
 			
 			var item = new ItemPoint(2,2)
 			this.Items.push(item);
