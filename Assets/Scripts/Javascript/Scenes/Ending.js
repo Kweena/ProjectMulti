@@ -45,11 +45,13 @@ function Ending(_score)
 			Time.SetTimeWhenSceneBegin();
 			// operation start
 
-			window.addEventListener('click',function(e)
+			var fn = function(e)
 			{
 				Scenes["Title"] = new Title();
 				Application.LoadedScene = Scenes["Title"];
-			})
+				window.removeEventListener('click',fn);
+			};
+			window.addEventListener('click',fn);
 
 			this.started = true;
 			Print('System:Scene ' + this.name + " Started !");
