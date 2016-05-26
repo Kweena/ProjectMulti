@@ -82,6 +82,7 @@ function MultiGrid()
 			var score1 = new ScorePanel(p1, scoreGroup.Transform.Size.x * 0.5, 150);
 			var score2 = new ScorePanel(p2, scoreGroup.Transform.Size.x * 0.5, 200);
 			this.Scores.push(score, score1, score2);
+			this.SetAllScorePosition();
 
 			this.started = true;
 
@@ -194,7 +195,6 @@ function MultiGrid()
 	}
 
 	this.SortScore = function(_player)
-
 	{
 		var changingRank = false;
 		var arrayCopy = this.Scores.splice(0);
@@ -209,7 +209,7 @@ function MultiGrid()
 			{
 				arrayCopy[i].Player.rank = i;
 				arrayCopy[i].StartPosition = arrayCopy[i].Transform.RelativePosition.Copy();
-				arrayCopy[i].EndPosition = new Vector(arrayCopy[i].Transform.RelativePosition.x, 50 + 50*i);
+				arrayCopy[i].EndPosition = new Vector(arrayCopy[i].Transform.RelativePosition.x, 40 + arrayCopy[i].Transform.Size.y * arrayCopy[i].Transform.RelativeScale.y * i * 1.1);
 			}
 			else if (arrayCopy[i].Player.score < _player.score) 
 			{
@@ -217,12 +217,21 @@ function MultiGrid()
 				_player.rank = i;
 				arrayCopy.splice(i,0,myscore);
 				arrayCopy[i].StartPosition = arrayCopy[i].Transform.RelativePosition.Copy();
-				arrayCopy[i].EndPosition = new Vector(arrayCopy[i].Transform.RelativePosition.x, 50 + 50*i);
+				arrayCopy[i].EndPosition = new Vector(arrayCopy[i].Transform.RelativePosition.x, 40 + arrayCopy[i].Transform.Size.y * arrayCopy[i].Transform.RelativeScale.y * i * 1.1);
 				changingRank = true;
 
 			}
 		}
 		this.newScore = arrayCopy;
+	}
+	this.SetAllScorePosition = function()
+	{
+
+		for(var i = 1; i < this.Scores.length; i++)
+		{
+			this.Scores[i].StartPosition = this.Scores[i].Transform.RelativePosition.Copy();
+			this.Scores[i].EndPosition = new Vector(this.Scores[i].Transform.RelativePosition.x, 40 + this.Scores[i].Transform.Size.y * this.Scores[i].Transform.RelativeScale.y * i * 1.1);
+		}
 	}
 
 	this.Awake()

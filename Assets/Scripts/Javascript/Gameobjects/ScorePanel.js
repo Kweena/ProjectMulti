@@ -42,8 +42,8 @@ function ScorePanel(_player, _x, _y)
 	this.Transform = {};
 	this.Transform.RelativePosition = new Vector(_x,_y);
 	this.Transform.Position = new Vector();
-	this.Transform.Size = new Vector(55,12);
-	this.Transform.RelativeScale = new Vector(4,4);
+	this.Transform.Size = new Vector(350,80);
+	this.Transform.RelativeScale = new Vector(0.7,0.7);
 	this.Transform.Scale = new Vector();
 	this.Transform.Pivot = new Vector(.5,.5);
 	this.Transform.angle = 0;
@@ -430,7 +430,7 @@ function ScorePanel(_player, _x, _y)
 	 * */
 	this.GUI = function() 
 	{
-		ctx.font = 10 * this.Transform.Scale.y + 'px Arial';
+		ctx.font = 50 * this.Transform.Scale.y + 'px Arial';
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 		ctx.fillStyle = this.Player.color;
