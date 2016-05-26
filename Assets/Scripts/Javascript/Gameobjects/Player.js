@@ -370,7 +370,7 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 		{
 			if (!this.isMoving) 
 			{
-				if( Application.LoadedScene.name == "MutliGrid")
+				if( Application.LoadedScene.name == "MultiGrid")
 				{
 					this.Transform.Position.x = this.Transform.IndexPosition.x * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.x; 
 					this.Transform.Position.y = this.Transform.IndexPosition.y * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.y; 
