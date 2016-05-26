@@ -14,6 +14,12 @@ function Vector(_x, _y)
 
 	if(typeof this.x != 'number' ) PrintErr("Parameter x in Vector constructor");
 	if(typeof this.y != 'number') PrintErr("Parameter y in Vector constructor");
+
+	this.Copy = function () 
+	{
+		return new Vector(this.x,this.y);
+	}
+
 	/** 
 	* Add two Vectors
 	* @param {Vector} _vector - The vector to add

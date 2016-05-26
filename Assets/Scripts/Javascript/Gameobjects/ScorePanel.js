@@ -48,6 +48,10 @@ function ScorePanel(_player, _x, _y)
 	this.Transform.Pivot = new Vector(.5,.5);
 	this.Transform.angle = 0;
 
+	this.StartPosition = new Vector(_x,_y);
+	this.EndPosition = new Vector(_x,_y);
+	this.speed = 200;
+
 	/**
 	 * @function SetPosition
 	 * @memberof GameObjects/GameObjects
@@ -354,6 +358,10 @@ function ScorePanel(_player, _x, _y)
 	{
 		if (this.enabled) 
 		{
+			this.Transform.RelativePosition.x = Tween.TweenGrid(this.Transform.RelativePosition.x, this.StartPosition.x, this.EndPosition.x, this.speed*Time.deltaTime, 0.3 );
+			this.Transform.RelativePosition.y = Tween.TweenGrid(this.Transform.RelativePosition.y, this.StartPosition.y, this.EndPosition.y, this.speed*Time.deltaTime, 0.3 );
+
+
 			if (this.Parent != null) 
 			{
 				this.Transform.Position.x = this.Transform.RelativePosition.x + this.Parent.Transform.Position.x;
