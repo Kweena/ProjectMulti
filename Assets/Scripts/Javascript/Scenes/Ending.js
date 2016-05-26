@@ -12,7 +12,7 @@
  * 
  * @return {Scene}
  * */
-function Ending(_score) 
+function Ending(_scores) 
 {
 	this.name = "Ending";
 	this.GameObjects =[];
@@ -21,7 +21,7 @@ function Ending(_score)
 	this.CurrentCamera = null;
 	this.AlphaMask = null;
 	this.started = false;
-	this.score = _score;
+	this.Scores = _scores;
 
 	this.WorldSize = new Vector(4096,4096);
 
@@ -71,7 +71,20 @@ function Ending(_score)
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 		ctx.fillStyle ="blue";
-		ctx.fillText('Congrats, The winner is : ',canvas.width * 0.5, 200);
+		ctx.fillText('Congrats, The winner is : ' + this.Scores[1].Player.pseudo ,canvas.width * 0.5, 150);
+
+		for (var i = 1; i < this.Scores.length; i++) 
+		{
+			console.log(this.Scores[i])
+			ctx.font = 50 * this.Scores[i].Transform.Scale.y + 'px Arial';
+			ctx.textAlign = 'left';
+			ctx.textBaseline = 'middle';
+			ctx.fillStyle = this.Scores[i].Player.color;
+			ctx.fillText(this.Scores[i].Player.pseudo, canvas.width * 0.25, 200 + 50 * i);
+			ctx.textAlign = 'right';
+			ctx.fillText(this.Scores[i].Player.score, canvas.width * 0.75, 200 + 50 * i);
+		
+		}
 		//ctx.fillStyle = this.Player.color;
 		//ctx.fillText(this.Player.pseudo + " - " + this.Player.score, this.Transform.Position.x, this.Transform.Position.y);
 
