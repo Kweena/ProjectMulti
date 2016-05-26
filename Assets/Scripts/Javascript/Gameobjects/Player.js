@@ -401,7 +401,7 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 		{
 			this.Renderer.Material.Source = Images["Player"];
 			//left
-			if (Input.KeysDown[37] && Physics.TileCollision(this.Grid.Tiles, Application.LoadedScene.WalkableTiles, new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 4)) 
+			if (Input.KeysDown[37] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 4)) 
 			{
 				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
 				this.nextIndex = new Vector(this.Transform.IndexPosition.x - 1, this.Transform.IndexPosition.y);
@@ -409,7 +409,7 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 				this.isMoving = true;
 			}
 			//right
-			else if (Input.KeysDown[39] && Physics.TileCollision(this.Grid.Tiles, Application.LoadedScene.WalkableTiles, new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 2)) 
+			else if (Input.KeysDown[39] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 2)) 
 			{
 				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
 				this.nextIndex = new Vector(this.Transform.IndexPosition.x + 1, this.Transform.IndexPosition.y);
@@ -417,7 +417,7 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 				this.isMoving = true;
 			}
 			//up
-			else if (Input.KeysDown[38] && Physics.TileCollision(this.Grid.Tiles, Application.LoadedScene.WalkableTiles, new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 1)) 
+			else if (Input.KeysDown[38] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 1)) 
 			{
 				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
 				this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y - 1);
@@ -425,7 +425,7 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 				this.isMoving = true;
 			}
 			//down
-			else if (Input.KeysDown[40] && Physics.TileCollision(this.Grid.Tiles, Application.LoadedScene.WalkableTiles, new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 3)) 
+			else if (Input.KeysDown[40] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 3)) 
 			{
 				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
 				this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y + 1);

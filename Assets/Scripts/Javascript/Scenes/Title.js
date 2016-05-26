@@ -114,7 +114,7 @@ function Title()
 			ctx.font = '40px Arial';
 			ctx.textAlign = 'center';
 			ctx.fillStyle = 'red';
-			ctx.fillText('Click for lunch the game', canvas.width * 0.5,canvas.height - 50 );
+			ctx.fillText('Click for launch the game', canvas.width * 0.5,canvas.height - 50 );
 		}
 	}
 
