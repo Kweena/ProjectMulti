@@ -67,7 +67,7 @@ function Ending(_scores)
 	{
 		ctx.fillStyle = "#E8FFBC"
 		ctx.fillRect(0,0,canvas.width,canvas.height);
-		ctx.font = '50 px Arial';
+		ctx.font = '50px Arial';
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 		ctx.fillStyle ="blue";
@@ -75,8 +75,7 @@ function Ending(_scores)
 
 		for (var i = 1; i < this.Scores.length; i++) 
 		{
-			console.log(this.Scores[i])
-			ctx.font = 50 * this.Scores[i].Transform.Scale.y + 'px Arial';
+			ctx.font = '36px Arial';
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'middle';
 			ctx.fillStyle = this.Scores[i].Player.color;
@@ -130,7 +129,7 @@ function Ending(_scores)
 			ctx.font = '40px Arial';
 			ctx.textAlign = 'center';
 			ctx.fillStyle = 'red';
-			ctx.fillText('Click for return to luncher', canvas.width * 0.5,canvas.height - 50 );
+			ctx.fillText('Click for return to launcher', canvas.width * 0.5,canvas.height - 50 );
 		}
 	}
 

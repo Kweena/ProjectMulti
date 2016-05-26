@@ -18,13 +18,12 @@ function MultiGrid()
 	//this.GameObjects =[];
 	this.started = false;
 	this.offsetGrid = new Vector(0,0);
-	this.WalkableTiles = [0];
 
 	this.Players = [];
 	this.Items = [];
 	this.Scores =  [];
 	this.newScore = null;
-	this.timer = new Timer(5);
+	this.timer = new Timer(20);
 
 
 	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
@@ -262,7 +261,8 @@ function MultiGrid()
 		ctx.font = '40px Arial';
 		ctx.textAlign = 'center';
 		ctx.fillStyle = 'black';
-		ctx.fillText('Timer : ' + min + " : " + sec, (canvas.width - this.Grid.length) * .25, 50);
+		ctx.fillText('Timer :', (canvas.width - this.Grid.length) * .25, 50);
+		ctx.fillText(min + " : " + sec, (canvas.width - this.Grid.length) * .25, 100);
 	}
 
 	this.Awake()
