@@ -24,6 +24,7 @@ function MultiGrid()
 	this.Items = [];
 	this.Scores =  [];
 	this.newScore = null;
+	this.timer = new Timer(5, false, null, function(){console.log("test")});
 
 
 	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
@@ -100,6 +101,8 @@ function MultiGrid()
 		if (!Application.gamePaused) 
 		{
 			this.Grid.Draw();
+
+			this.ShowTimer();
 
 			for (var i = 0; i < this.Items.length; i++) 
 			{
@@ -222,6 +225,24 @@ function MultiGrid()
 		}
 		console.log(arrayCopy);
 		this.newScore = arrayCopy;
+	}
+
+	this.ShowTimer = function()
+	{
+		var t = this.timer.duration - this.timer.currentTime;
+		var sec = t.toFixed(0) % 60;
+		var min;
+
+		(sec == 0) ? min = Math.round(t / 60) : min = Math.floor(t / 60);
+		if(sec < 10) sec = "0"+ sec;
+		if(t < 60 && sec != 0)	min = 0;
+		
+
+		ctx.font = '40px Arial';
+		ctx.textAlign = 'center';
+		ctx.fillStyle = 'black';
+		ctx.fillText('Timer : ' + min + " : " + sec,250, 50);
+
 	}
 
 	this.Awake()
