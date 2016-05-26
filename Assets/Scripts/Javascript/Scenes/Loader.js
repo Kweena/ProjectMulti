@@ -55,6 +55,7 @@ function Loader()
 			Scenes["SceneIA"]  = new SceneIA();	*/	
 			Scenes["MultiGrid"] = new MultiGrid();
 			Scenes["Title"] = new Title();
+			Scenes["Ending"] = new Ending();
 
 			LoadImages();
 			this.started = true;
