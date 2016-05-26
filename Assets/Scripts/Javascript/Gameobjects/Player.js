@@ -456,7 +456,7 @@ function Player(_grid,_color,_pseudo)
 				this.Transform.IndexPosition = this.nextIndex;
 				var index = IndexFromCoord(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y, this.Grid.cases);
 
-				if (this.Grid.Color[index] != this.Color) 
+				if (this.Grid.Color[index] != this.Color || this.Grid.Color[index] == undefined) 
 				{
 					this.Grid.Color[index] = this.color;
 					this.Grid.ColorSize[index] = 0;
