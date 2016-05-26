@@ -24,7 +24,7 @@ function MultiGrid()
 	this.Items = [];
 	this.Scores =  [];
 	this.newScore = null;
-	this.timer = new Timer(5);
+	this.timer = new Timer(30);
 
 
 	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
