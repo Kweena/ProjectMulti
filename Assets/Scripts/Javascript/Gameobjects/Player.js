@@ -36,11 +36,11 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 	this.lastMove = Time.Time;
 	this.color = _color;
 	this.isMoving = false;
-	this.speed = 200;
+	this.speed = 225;
 	this.score = 0;
 	
 	this.Grid = _grid;
-	this.pseudo = _pseudo || "Azennhor"; 
+	this.pseudo = _pseudo || "Player" + _rank; 
 	this.rank = _rank;
 	
 	this.MouseOffset = new Vector();

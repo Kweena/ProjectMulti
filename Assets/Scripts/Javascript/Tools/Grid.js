@@ -44,10 +44,11 @@ function Grid(_x, _y, _length, _cases)
 					{
 						this.ColorSize[j * this.cases + i] += 0.1;
 					}
-					ctx.fillRect(this.x + i * this.caseLength + (0.5 - 0.5 * this.ColorSize[j * this.cases + i]) * this.caseLength + 2, 
+					ctx.RoundedBox(this.x + i * this.caseLength + (0.5 - 0.5 * this.ColorSize[j * this.cases + i]) * this.caseLength + 2, 
 								this.y + j * this.caseLength + (0.5 - 0.5 * this.ColorSize[j * this.cases + i]) * this.caseLength + 2, 
 								this.caseLength * this.ColorSize[j * this.cases + i] - 4, 
-								this.caseLength * this.ColorSize[j * this.cases + i] - 4);
+								this.caseLength * this.ColorSize[j * this.cases + i] - 4,
+								this.caseLength * 0.15);
 					ctx.globalAlpha = 1;
 				}
 				// ctx.strokeRect(this.x + i * this.caseLength, this.y + j * this.caseLength, this.caseLength, this.caseLength);

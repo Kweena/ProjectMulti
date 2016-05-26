@@ -19,6 +19,9 @@ var Scenes = {};
 var Gravity = new Vector();
 Gravity.y = -9.81;
 
+// Socket
+var url = 'http://10.10.7.50:8000';
+var socket = io.connect(url);
 
 var Application = 
 {
@@ -36,7 +39,8 @@ var ImagesPath =
 	{name: "ItemPoint", path: "MultiColor/greenCrystal.png"},
 	{name: "Player", path: "MultiColor/PlayerRed.png"},
 	{name: "Tiles", path: "MultiColor/TilesGrey.png"},
-	{name: "Panel", path: "MultiColor/panel.png"}
+	{name: "Panel", path: "MultiColor/panel.png"},
+	{name: "Title", path: "MultiColor/title.png"}
 
 ];
 var Images = {};
