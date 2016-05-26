@@ -23,6 +23,7 @@ function MultiGrid()
 	this.Players = [];
 	this.Items = [];
 	this.Scores =  [];
+	this.newScore = null;
 
 
 	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
@@ -59,14 +60,28 @@ function MultiGrid()
 		{
 			Time.SetTimeWhenSceneBegin();
 			// operation start
-			var p = new Player(this.Grid, "#BADA55");
+			var p = new Player(0,0,this.Grid, "#BADA55", 1);
+			var p1 = new Player(1,1,this.Grid, "#1ce" , 2);
+			var p2 = new Player(3,3,this.Grid, "#b00b13", 3);
 			this.Players.push(p);
+			this.Players.push(p1, p2);
+			p.score = 3;
+			p1.pseudo = "Ricco7La";
+			p1.score = 2;
+			p2.pseudo = "Kweena";
+			p2.score = 1;
 			
 			var item = new ItemPoint(2,2)
 			this.Items.push(item);
 
-			var score = new ScorePanel(p,400,400);
-			this.Scores.push(score);
+			var posX = canvas.width - (canvas.width - canvas.height) * 0.5;
+			var scoreGroup = new ScoreGroup(new Vector(posX * 1.05, 10), new Vector((canvas.width - canvas.height) * 0.45, canvas.height));
+			this.Scores.push(scoreGroup);
+
+			var score = new ScorePanel(p, scoreGroup.Transform.Size.x * 0.5, 100);
+			var score1 = new ScorePanel(p1, scoreGroup.Transform.Size.x * 0.5, 150);
+			var score2 = new ScorePanel(p2, scoreGroup.Transform.Size.x * 0.5, 200);
+			this.Scores.push(score, score1, score2);
 
 			this.started = true;
 
@@ -94,6 +109,11 @@ function MultiGrid()
 			{
 				this.Players[i].Start();
 			}
+			if (this.newScore != null) 
+			{
+				this.Scores = this.newScore;
+				this.newScore = null;
+			}
 			for (var i = 0; i < this.Scores.length; i++) 
 			{
 				this.Scores[i].Start();
@@ -113,9 +133,9 @@ function MultiGrid()
 							{
 								delete this.Grid.Color[k];
 								this.Players[i].score ++;
-								console.log(this.Players[i].score)
 							}
 						}
+						this.SortScore(this.Players[i]);
 					}
 				}
 			}
@@ -135,7 +155,6 @@ function MultiGrid()
 		if (!Application.GamePaused) 
 		{
 			//Show UI
-			this.Scoring();
 		} 
 		else 
 		{
@@ -173,12 +192,36 @@ function MultiGrid()
 		}
 	}
 
-	this.Scoring = function()
+	this.SortScore = function(_player)
+
 	{
-		ctx.font = '40px Arial';
-		ctx.textAlignLast = 'center';
-		ctx.fillStyle = 'black';
-		ctx.fillText('Scoring', canvas.width - 300, 50);
+		var changingRank = false;
+		console.log(_player);
+		var arrayCopy = this.Scores.splice(0);
+		for(var i = 1; i < arrayCopy.length; i++)
+		{
+
+			if (i == _player.rank) 
+			{
+				break;
+			}
+			if (changingRank) 
+			{
+				arrayCopy[i].Player.rank = i;
+				arrayCopy[i].Transform.RelativePosition.y = 50 + 50*i;
+			}
+			else if (arrayCopy[i].Player.score < _player.score) 
+			{
+				var myscore = arrayCopy.splice(_player.rank,1)[0];
+				_player.rank = i;
+				arrayCopy.splice(i,0,myscore);
+				arrayCopy[i].Transform.RelativePosition.y  = 50 + 50*i;
+				changingRank = true;
+
+			}
+		}
+		console.log(arrayCopy);
+		this.newScore = arrayCopy;
 	}
 
 	this.Awake()

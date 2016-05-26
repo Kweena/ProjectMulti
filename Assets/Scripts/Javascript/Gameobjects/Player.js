@@ -26,7 +26,7 @@
  *
  *
  * */
-function Player(_grid,_color,_pseudo) 
+function Player(_x, _y, _grid,_color, _rank, _pseudo) 
 {
 	this.name = "Player";
 	this.enabled = true;
@@ -40,7 +40,8 @@ function Player(_grid,_color,_pseudo)
 	this.score = 0;
 	
 	this.Grid = _grid;
-	this.pseudo = _pseudo || "Boule à facette"; 
+	this.pseudo = _pseudo || "Azennhor"; 
+	this.rank = _rank;
 	
 	this.MouseOffset = new Vector();
 
@@ -54,7 +55,7 @@ function Player(_grid,_color,_pseudo)
 	this.Transform.Scale = new Vector(1,1);
 	this.Transform.Pivot = new Vector(.5,.5);
 	this.Transform.angle = 0;
-	this.Transform.IndexPosition = new Vector(0,0);
+	this.Transform.IndexPosition = new Vector(_x,_y);
 
 	//Tween
 	this.StartPosition = new Vector();
@@ -433,7 +434,7 @@ function Player(_grid,_color,_pseudo)
 			this.Transform.Position.x = Tween.TweenGrid(this.Transform.Position.x, this.StartPosition.x, this.EndPosition.x, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
 			this.Transform.Position.y = Tween.TweenGrid(this.Transform.Position.y, this.StartPosition.y, this.EndPosition.y, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
 			
-			var middle = Math.abs( (this.EndPosition.x - this.StartPosition.x) / 2 )+ ( (this.EndPosition.y - this.StartPosition.y) / 2 );
+			var middle = Math.abs( (this.EndPosition.x - this.StartPosition.x) / 2 + ( (this.EndPosition.y - this.StartPosition.y) / 2 ));
 			var pos = Math.abs(this.Transform.Position.x - this.StartPosition.x + this.Transform.Position.y - this.StartPosition.y );
 
 			if ( pos < middle ) 
@@ -456,7 +457,7 @@ function Player(_grid,_color,_pseudo)
 				this.Transform.IndexPosition = this.nextIndex;
 				var index = IndexFromCoord(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y, this.Grid.cases);
 
-				if (this.Grid.Color[index] != this.Color || this.Grid.Color[index] == undefined) 
+				if (this.Grid.Color[index] != this.color) 
 				{
 					this.Grid.Color[index] = this.color;
 					this.Grid.ColorSize[index] = 0;
