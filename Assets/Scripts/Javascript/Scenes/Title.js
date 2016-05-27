@@ -47,10 +47,11 @@ function Title()
 			
 			var url = 'http://10.10.7.55:8000';
 			var socket = io.connect(url);
-			
+			var _self = this;
 			var fn = function(e)
 			{
-				if (this.nbrPlayers < 2 ) 
+				console.log(_self);
+				if (_self.nbrPlayers < 2 ) 
 				{
 					console.log("waiting for player");
 				}
@@ -70,7 +71,6 @@ function Title()
 
 			socket.on('CheckConnection',function(_data)
 			{
-
 				socket.emit('ConnectionOK',_data);
 			})
 
