@@ -7,7 +7,9 @@ var http = require("http");
 var path = require("path"); 
 var fs = require("fs"); 
 
-var Sockets = {};	
+var Sockets = {};
+
+var host = null;
 
 //console.log("Starting web server at " + serverUrl + ":" + port);
 
@@ -76,6 +78,11 @@ io.on('connection', function(socket)
 	socket.emit('CheckConnection',socket.id);
 	socket.on("ConnectionOK",function (socketID) 
 	{
+		if (host == null) 
+		{
+			Sockets[socketID].emit('IsHost',true);
+			host = socketID;
+		}
 		Clients.push(socketID);
 		console.log('Player Connected', socketID , "Nb",Clients.length);
 		io.emit('PlayersConnected',Clients.length)
