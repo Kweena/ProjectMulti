@@ -104,7 +104,7 @@ io.on('connection', function(socket)
 			{
 				id: i,
 				StartPos: sp,
-				colors: mycolors
+				Colors: mycolors
 			};
 			Sockets[Clients[i]].emit('StartGame',myData);
 		}
@@ -141,8 +141,8 @@ function SetPosition(_length)
 	for (var i = 0; i < Clients.length; i++) 
 	{
 		var v = {
-			x: Math.Random.RangeInt(0,_length,true),
-			y: Math.Random.RangeInt(0,_length,true)
+			x: Math.Random.RangeInt(0,_length - 1,true),
+			y: Math.Random.RangeInt(0,_length - 1,true)
 		};
 		for (var j = 0; j < sp.length; j++) 
 		{
