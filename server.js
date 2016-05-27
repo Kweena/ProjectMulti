@@ -104,7 +104,7 @@ io.on('connection', function(socket)
 	{
 		console.log('Ready')
 		var length = Clients.length * 2;
-		var sp = SetPosition(length);
+		Player = SetPosition(length);
 		var mycolors = SetColors();
 		var time = 30
 		for (var i = 0; i < Clients.length; i++) 
@@ -112,13 +112,13 @@ io.on('connection', function(socket)
 			var myData = 
 			{
 				id: i,
-				StartPos: sp,
+				StartPos: Player,
 				Colors: mycolors,
 				Timer: time
 			};
 			Sockets[Clients[i]].emit('StartGame',myData);
 		}
-		// To test
+		// Stop Game
 		setTimeout(function () 
 		{
 			Players = [];
@@ -126,11 +126,22 @@ io.on('connection', function(socket)
 			Socket = {};
 			host = null; 
 		}, time + 3);
+
+		setTimeout(function (argument) {
+			DropItems(_length);
+		}, Math.Random.RangeInt(20,40,true))
+
 	})
 	socket.on('Move', function (data) 
  	{
  		console.log(data);
+ 		Players[data.id].x = data.x;
+ 		Players[data.id].y = data.y;
  		socket.broadcast.emit('MoveOther',data);
+ 	})
+ 	socket.on('SetScore', function (data) 
+ 	{
+ 		console.log("Get Score",data.id);
  	})
 });
 
@@ -196,4 +207,33 @@ function SetColors()
 		colors.push(c);
 	}
 	return colors;
+}
+
+function DropItems (_length) 
+{
+	var v = {
+		x: Math.Random.RangeInt(0,_length - 1,true),
+		y: Math.Random.RangeInt(0,_length - 1,true)
+	};
+	var ok = true;
+	for (var j = 0; j < Player.length; j++) 
+	{
+		if (Player[j].x == v.x && Player[j].y == v.y) 
+		{
+			i--;
+			ok = false;
+			break;
+		}
+	}
+	if (ok) 
+	{
+		DropItems(_length);
+	}
+	else 
+	{
+		socket.emit('SetItemPoint', {x: v.x, y: v.y});
+		setTimeout(function (argument) {
+			DropItems(_length);
+		}, Math.Random.RangeInt(20,40,true))
+	}
 }
