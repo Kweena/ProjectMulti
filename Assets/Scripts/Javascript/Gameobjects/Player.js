@@ -41,7 +41,7 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 	
 	this.Grid = _grid;
 	this.rank = _id;
-	this.pseudo = _pseudo || "Player" + _id + 1; 
+	this.pseudo = _pseudo || "Player" + (_id + 1); 
 	this.rank = _id;
 	
 	this.MouseOffset = new Vector();
