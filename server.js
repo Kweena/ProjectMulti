@@ -6,7 +6,8 @@ var serverUrl = app.get('port');//"127.0.0.1";
 var http = require("http");
 var path = require("path"); 
 var fs = require("fs"); 
-		
+
+var Sockets = {};	
 
 //console.log("Starting web server at " + serverUrl + ":" + port);
 
@@ -71,9 +72,15 @@ var io = require('socket.io')(server);
 
 io.on('connection', function(socket) 
 {
-	Clients.push(socket);
-	console.log('Player Connected', socket);
-	socket.emit('PlayersConnected',Clients.length)
+	Sockets[socket.id] = socket;
+	socket.emit('CheckConnection',socket.id);
+	socket.on("ConnectionOK",function (socket) 
+	{
+		Clients.push(socket);
+		console.log('Player Connected', socket , "Nb",Clients.length);
+	});
+	
+	io.emit('PlayersConnected',Clients.length)
 	socket.on('restartgame', function (data) 
 	{
 		console.log('restartgame');
@@ -81,15 +88,22 @@ io.on('connection', function(socket)
 	});
 	socket.on('disconnect', function (data) 
 	{
-		console.log("Player Disconected");
+
+		console.log("Player Disconected",data);
 
 	});
 	socket.on('Ready', function (data) 
 	{
+		console.log('Ready')
 		for (var i = 0; i < Clients.length; i++) 
 		{
-			var myData;
-			Clients[i].emit('StartGame',myData);
+			var myData = 
+			{
+				id: i,
+				StartPos: {},
+				color: 
+			};
+			Sockets[Clients[i]].emit('StartGame',myData);
 		}
 		
 	})
