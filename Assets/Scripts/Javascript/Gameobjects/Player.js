@@ -42,7 +42,9 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 	this.Grid = _grid;
 	this.rank = _id;
 	this.pseudo = _pseudo || "Player" + (_id + 1); 
-	this.rank = _id;
+	this.id = _id;
+	this.isMyPlayer = false;
+
 	
 	this.MouseOffset = new Vector();
 
@@ -393,90 +395,118 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 	 * */
 	this.Update = function() 
 	{
+		var _self = this;
 		//refresh
 		if (Input.KeysDown[9]) 
 		{
 			location.reload();
 		}
 
-		if (!this.isMoving) 
+		if(this.isMyPlayer)
 		{
-			this.Renderer.Material.Source = Images["Player"];
-			//left
-			if (Input.KeysDown[37] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 4)) 
+			if (!this.isMoving) 
 			{
-				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
-				this.nextIndex = new Vector(this.Transform.IndexPosition.x - 1, this.Transform.IndexPosition.y);
-				this.EndPosition = this.IndexToPixel(this.nextIndex);
-				this.isMoving = true;
-				this.Transform.direction = "Left";
+				this.Renderer.Material.Source = Images["Player"];
+				//left
+				if (Input.KeysDown[37] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 4)) 
+				{
+					this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
+					this.nextIndex = new Vector(this.Transform.IndexPosition.x - 1, this.Transform.IndexPosition.y);
+					this.EndPosition = this.IndexToPixel(this.nextIndex);
+					this.isMoving = true;
+					this.Transform.direction = "Left";
+					socket.emit('Move', 
+					{
+						id : _self.id,
+						x : _self.nextIndex.x,
+						y : _self.nextIndex.y,
+					})
 
-			}
-			//right
-			else if (Input.KeysDown[39] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 2)) 
-			{
-				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
-				this.nextIndex = new Vector(this.Transform.IndexPosition.x + 1, this.Transform.IndexPosition.y);
-				this.EndPosition = this.IndexToPixel(this.nextIndex);
-				this.isMoving = true;
-				this.Transform.direction = "Right";
+				}
+				//right
+				else if (Input.KeysDown[39] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 2)) 
+				{
+					this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
+					this.nextIndex = new Vector(this.Transform.IndexPosition.x + 1, this.Transform.IndexPosition.y);
+					this.EndPosition = this.IndexToPixel(this.nextIndex);
+					this.isMoving = true;
+					this.Transform.direction = "Right";
+					socket.emit('Move', 
+					{
+						id : _self.id,
+						x : _self.nextIndex.x,
+						y : _self.nextIndex.y,
+					})
 
-			}
-			//up
-			else if (Input.KeysDown[38] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 1)) 
-			{
-				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
-				this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y - 1);
-				this.EndPosition = this.IndexToPixel(this.nextIndex);
-				this.isMoving = true;
-				this.Transform.direction = "Up";
+				}
+				//up
+				else if (Input.KeysDown[38] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 1)) 
+				{
+					this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
+					this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y - 1);
+					this.EndPosition = this.IndexToPixel(this.nextIndex);
+					this.isMoving = true;
+					this.Transform.direction = "Up";
+					socket.emit('Move', 
+					{
+						id : _self.id,
+						x : _self.nextIndex.x,
+						y : _self.nextIndex.y,
+					})
 
-			}
-			//down
-			else if (Input.KeysDown[40] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 3)) 
-			{
-				this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
-				this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y + 1);
-				this.EndPosition = this.IndexToPixel(this.nextIndex);
-				this.isMoving = true;
-				this.Transform.direction = "Down";
+				}
+				//down
+				else if (Input.KeysDown[40] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 3)) 
+				{
+					this.StartPosition = this.IndexToPixel(this.Transform.IndexPosition);
+					this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y + 1);
+					this.EndPosition = this.IndexToPixel(this.nextIndex);
+					this.isMoving = true;
+					this.Transform.direction = "Down";
+					socket.emit('Move', 
+					{
+						id : _self.id,
+						x : _self.nextIndex.x,
+						y : _self.nextIndex.y,
+					})
 
-			}
-		}
-		else
-		{
-			this.Renderer.Material.Source = Images["PlayerJump" + this.Transform.direction];
-
-			this.Transform.Position.x = Tween.TweenGrid(this.Transform.Position.x, this.StartPosition.x, this.EndPosition.x, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
-			this.Transform.Position.y = Tween.TweenGrid(this.Transform.Position.y, this.StartPosition.y, this.EndPosition.y, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
-			
-			var middle = Math.abs( (this.EndPosition.x - this.StartPosition.x) / 2 + ( (this.EndPosition.y - this.StartPosition.y) / 2 ));
-			var pos = Math.abs(this.Transform.Position.x - this.StartPosition.x + this.Transform.Position.y - this.StartPosition.y );
-
-			if ( pos < middle ) 
-			{
-				var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x, this.BaseScale.x * 1.75, 2 *1.75 *Time.deltaTime,0.01);
-				this.Transform.Scale.x = t;
-				this.Transform.Scale.y = t;
+				}
 			}
 			else
 			{
-				var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x * 1.75, this.BaseScale.x, 2 * 1.75 * Time.deltaTime,0.01);	
-				this.Transform.Scale.x = t;
-				this.Transform.Scale.y = t;
-			}
+				this.Renderer.Material.Source = Images["PlayerJump" + this.Transform.direction];
 
+				this.Transform.Position.x = Tween.TweenGrid(this.Transform.Position.x, this.StartPosition.x, this.EndPosition.x, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
+				this.Transform.Position.y = Tween.TweenGrid(this.Transform.Position.y, this.StartPosition.y, this.EndPosition.y, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
+				
+				var middle = Math.abs( (this.EndPosition.x - this.StartPosition.x) / 2 + ( (this.EndPosition.y - this.StartPosition.y) / 2 ));
+				var pos = Math.abs(this.Transform.Position.x - this.StartPosition.x + this.Transform.Position.y - this.StartPosition.y );
 
-			if (this.Transform.Position.x == this.EndPosition.x && this.Transform.Position.y == this.EndPosition.y  ) 
-			{
-				this.isMoving = false;
-				this.Transform.IndexPosition = this.nextIndex;
-				var index = IndexFromCoord(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y, this.Grid.cases);
-
-				if (this.Grid.Color[index] != this.color) 
+				if ( pos < middle ) 
 				{
-					this.Grid.Color[index] = this.color;
-					this.Grid.ColorSize[index] = 0;
+					var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x, this.BaseScale.x * 1.75, 2 *1.75 *Time.deltaTime,0.01);
+					this.Transform.Scale.x = t;
+					this.Transform.Scale.y = t;
+				}
+				else
+				{
+					var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x * 1.75, this.BaseScale.x, 2 * 1.75 * Time.deltaTime,0.01);	
+					this.Transform.Scale.x = t;
+					this.Transform.Scale.y = t;
+				}
+
+
+				if (this.Transform.Position.x == this.EndPosition.x && this.Transform.Position.y == this.EndPosition.y  ) 
+				{
+					this.isMoving = false;
+					this.Transform.IndexPosition = this.nextIndex;
+					var index = IndexFromCoord(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y, this.Grid.cases);
+
+					if (this.Grid.Color[index] != this.color) 
+					{
+						this.Grid.Color[index] = this.color;
+						this.Grid.ColorSize[index] = 0;
+					}
 				}
 			}
 		}
