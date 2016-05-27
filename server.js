@@ -80,6 +80,7 @@ io.on('connection', function(socket)
 	{
 		if (host == null) 
 		{
+			console.log(Sockets[socketID])
 			Sockets[socketID].emit('IsHost',true);
 			host = socketID;
 		}
@@ -116,10 +117,20 @@ io.on('connection', function(socket)
 			Sockets[Clients[i]].emit('StartGame',myData);
 		}
 	})
+
+	socket.on('Move', function (data) 
+	{
+		socket.broadcast.emit('MoveOther',data);
+	})
+
 });
 
 var Clients = [];
 var Players = [];
+
+
+
+
 
 // Import Random.js
 Math.Random = {};

@@ -50,7 +50,7 @@ function Title()
 			var fn = function(e)
 			{
 				console.log(_self);
-				if (_self.nbrPlayers < 2 ) 
+				if (_self.nbrPlayers < 2 || !_self.isHost) 
 				{
 					console.log("waiting for player");
 				}
@@ -70,6 +70,7 @@ function Title()
 
 			socket.on('IsHost', function(_bool)
 			{
+				console.log(_bool)
 				_self.isHost = _bool;
 			});
 
