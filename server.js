@@ -123,7 +123,8 @@ io.on('connection', function(socket)
 		{
 			Players = [];
 			Clients = [];
-			Socket = {}; 
+			Socket = {};
+			host = null; 
 		}, time + 3);
 	})
 	socket.on('Move', function (data) 
