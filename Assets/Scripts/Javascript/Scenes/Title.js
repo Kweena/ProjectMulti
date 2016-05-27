@@ -56,7 +56,8 @@ function Title()
 				}
 				else
 				{	
-					socket.emit("Ready");			
+					socket.emit("Ready");	
+					console.log("We are Ready");		
 					
 				}
 				// Scenes["MultiGrid"] = new MultiGrid();
@@ -66,6 +67,13 @@ function Title()
 			};
 			window.addEventListener('click',fn);
 			
+
+			socket.on('CheckConnection',function(_data)
+			{
+
+				socket.emit('ConnectionOK',_data);
+			})
+
 
 			socket.on('PlayersConnected', function(_nbrPlayers) 
 			{
