@@ -77,8 +77,8 @@ function Title()
 
 			socket.on('PlayersConnected', function(_nbrPlayers) 
 			{
-				this.nbrPlayers = _nbrPlayers;
-				console.log("P :" + _nbrPlayers);  
+				_self.nbrPlayers = _nbrPlayers;
+				console.log("P :" + _nbrPlayers);
 
 			})
 
