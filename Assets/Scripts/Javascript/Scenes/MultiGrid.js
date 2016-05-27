@@ -31,7 +31,7 @@ function MultiGrid(_parameters)
 	this.Parameters = {};
 	this.Parameters.id = _parameters.id;
 	this.Parameters.StartPos = _parameters.StartPos;
-	this.Parameters.color = _parameters.color;
+	this.Parameters.Colors = _parameters.Colors;
 
 	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
 	var smaller = canvas.width < canvas.height ? canvas.width : canvas.height;
@@ -167,7 +167,7 @@ function MultiGrid(_parameters)
 
 		for (var i = 0; i < this.Parameters.StartPos.length; i++)
 		{	
-			var player = new Player(this.Parameters.StartPos[i].x, this.Parameters.StartPos[i].y, scaling, scaling, 2 * this.Grid.caseLength, this.Grid, this.Parameters.color, i);
+			var player = new Player(this.Parameters.StartPos[i].x, this.Parameters.StartPos[i].y, scaling, scaling, 2 * this.Grid.caseLength, this.Grid, this.Parameters.Colors[i], i);
 			this.Players.push(player);
 			var score = new ScorePanel(player, scoreGroup.Transform.Size.x * 0.5, 100);
 			this.Scores.push(score);
