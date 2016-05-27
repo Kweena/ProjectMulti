@@ -63,9 +63,18 @@ function MultiGrid(_parameters)
 	 * */
 	this.Start = function() 
 	{
+		var _self = this;
 		if (!this.started) 
 		{
 			Time.SetTimeWhenSceneBegin();
+
+			socket.on('SetItemPoint', function (_x, _y) 
+			{
+				 var item = new ItemPoint(_x,_y);
+				 _self.Items.push(item);
+			});
+
+
 			// operation start
 			 
 			this.AddPlayer();
@@ -93,30 +102,30 @@ function MultiGrid(_parameters)
 			for (var i = 0; i < this.Items.length; i++) 
 			{
 				this.Items[i].Start();
-			}
+			};
 			for (var i = 0; i < this.Players.length; i++) 
 			{
 				this.Players[i].Start();
-			}
+			};
 			if (this.newScore != null) 
 			{
 				this.Scores = this.newScore;
 				this.newScore = null;
-			}
+			};
 			this.Scores[0].Start();
 			for (var i = this.Scores.length-1; i > 0; i--) 
 			{
 				this.Scores[i].Start();
-			}
+			};
 			this.CheckCollisionItems();
-		}
+		};
 
 		if (Application.debugMode) 
 		{
 			Debug.DebugScene();
-		}
+		};
 		this.GUI();
-	}
+	};
 	/**
 	 * Called each frame, code all the GUI here.
 	 * */
@@ -129,11 +138,12 @@ function MultiGrid(_parameters)
 		else 
 		{
 			// Show pause menu
-		}
-	}
+		};
+	};
 
 	this.CheckCollisionItems = function()
 	{
+		var _self = this;
 		for (var i = 0; i < this.Players.length; i++) 
 		{
 			for (var j = 0; j < this.Items.length; j++) 
@@ -151,10 +161,14 @@ function MultiGrid(_parameters)
 						}
 					}
 					this.SortScore(this.Players[i]);
-				}
-			}
-		}
-	}
+					socket.emit('SetScore', 
+					{
+						id: _self.Players[i];
+					});
+				};
+			};
+		};
+	};
 
 	this.AddPlayer = function()
 	{	
