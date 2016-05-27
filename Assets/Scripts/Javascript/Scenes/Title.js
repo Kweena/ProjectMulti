@@ -21,6 +21,7 @@ function Title()
 	this.CurrentCamera = null;
 	this.AlphaMask = null;
 	this.started = false;
+	this.nbrPlayers = _nbrPlayers;
 
 	this.WorldSize = new Vector(4096,4096);
 
@@ -43,14 +44,36 @@ function Title()
 		{
 			Time.SetTimeWhenSceneBegin();
 			// operation start
-
+			
+			var url = 'http://10.10.7.55:8000';
+			var socket = io.connect(url);
+			
 			var fn = function(e)
 			{
-				Scenes["MultiGrid"] = new MultiGrid();
-				Application.LoadedScene = Scenes["MultiGrid"];
-				window.removeEventListener('click',fn);
+				if (this.nbrPlayers < 2 ) 
+				{
+					console.log("waiting for player");
+				}
+				else
+				{	
+					socket.emit("Ready");			
+					
+
+				}
+				// Scenes["MultiGrid"] = new MultiGrid();
+				// Application.LoadedScene = Scenes["MultiGrid"];
+				// window.removeEventListener('click',fn);
+
 			};
 			window.addEventListener('click',fn);
+			
+
+			socket.on('PlayersConnected', function(_nbrPlayers) 
+			{
+				console.log("P :" + _nbrPlayers);  
+
+			})
+
 
 			this.started = true;
 			Print('System:Scene ' + this.name + " Started !");

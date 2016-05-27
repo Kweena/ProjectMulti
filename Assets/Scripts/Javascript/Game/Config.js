@@ -20,7 +20,7 @@ var Gravity = new Vector();
 Gravity.y = -9.81;
 
 // Socket
-var url = 'http://10.10.7.50:8000';
+var url = 'http://10.10.7.55:8000';
 var socket = io.connect(url);
 window.onbeforeunload = Exit;
 function Exit()
