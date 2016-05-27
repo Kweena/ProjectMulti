@@ -163,7 +163,7 @@ function MultiGrid(_parameters)
 					this.SortScore(this.Players[i]);
 					socket.emit('SetScore', 
 					{
-						id: _self.Players[i];
+						id: _self.Players[i]
 					});
 				};
 			};
