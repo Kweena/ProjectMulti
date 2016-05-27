@@ -97,13 +97,14 @@ io.on('connection', function(socket)
 		console.log('Ready')
 		var length = Clients.length * 2;
 		var sp = SetPosition(length);
+		var mycolors = SetColors();
 		for (var i = 0; i < Clients.length; i++) 
 		{
 			var myData = 
 			{
 				id: i,
 				StartPos: sp,
-				color: Math.Random.ColorHEX()
+				colors: mycolors
 			};
 			Sockets[Clients[i]].emit('StartGame',myData);
 		}
@@ -134,7 +135,7 @@ Math.Random.ColorHEX = function()
     return color;
 };
 
-function SetPosition (_length) 
+function SetPosition(_length) 
 {
 	var sp = [];
 	for (var i = 0; i < Clients.length; i++) 
@@ -145,7 +146,7 @@ function SetPosition (_length)
 		};
 		for (var j = 0; j < sp.length; j++) 
 		{
-			if (sp.x == v.x && sp.y == v.y) 
+			if (sp[j].x == v.x && sp[j].y == v.y) 
 			{
 				i--;
 				break;
@@ -154,4 +155,22 @@ function SetPosition (_length)
 		sp.push(v);
 	}
 	return sp;
+}
+function SetColors() 
+{
+	var colors = [];
+	for (var i = 0; i < Clients.length; i++) 
+	{
+		var c =Math.Random.ColorHEX();
+		for (var j = 0; j < colors.length; j++) 
+		{
+			if (colors[j] == c) 
+			{
+				i--;
+				break;
+			}
+		}
+		colors.push(c);
+	}
+	return colors;
 }

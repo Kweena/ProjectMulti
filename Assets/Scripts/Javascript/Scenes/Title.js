@@ -79,6 +79,7 @@ function Title()
 
 			socket.on('StartGame', function(_data)
 			{
+				console.log(_data);
 				Scenes["MultiGrid"] = new MultiGrid(_data);
 				Application.LoadedScene = Scenes["MultiGrid"];
 			})
