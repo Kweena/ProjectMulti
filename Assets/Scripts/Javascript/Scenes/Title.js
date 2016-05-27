@@ -21,7 +21,7 @@ function Title()
 	this.CurrentCamera = null;
 	this.AlphaMask = null;
 	this.started = false;
-	this.nbrPlayers = _nbrPlayers;
+	this.nbrPlayers = 0;
 
 	this.WorldSize = new Vector(4096,4096);
 
@@ -58,7 +58,6 @@ function Title()
 				{	
 					socket.emit("Ready");			
 					
-
 				}
 				// Scenes["MultiGrid"] = new MultiGrid();
 				// Application.LoadedScene = Scenes["MultiGrid"];
@@ -70,6 +69,7 @@ function Title()
 
 			socket.on('PlayersConnected', function(_nbrPlayers) 
 			{
+				this.nbrPlayers = _nbrPlayers;
 				console.log("P :" + _nbrPlayers);  
 
 			})
