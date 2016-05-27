@@ -45,12 +45,13 @@ function Title()
 		{
 			Time.SetTimeWhenSceneBegin();
 			// operation start
-			
+			var url = 'http://10.10.7.55:8000';
+			socket = io.connect(url);
 			var _self = this;
 			var fn = function(e)
 			{
 				console.log(_self);
-				if (_self.nbrPlayers < 2 || !_self.isHost) 
+				if (_self.nbrPlayers < 2 ) 
 				{
 					console.log("waiting for player");
 				}
@@ -65,6 +66,7 @@ function Title()
 			
 			socket.on('CheckConnection', function(_data)
 			{
+				console.log('checked')
 				socket.emit('ConnectionOK',_data);
 			});
 

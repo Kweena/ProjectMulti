@@ -344,6 +344,7 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 	 * */
 	this.Start = function() 
 	{
+		var _self = this;
 		if (!this.started) {
 			// operation start
 			this.Renderer.Material.Source = Images["Player"];
@@ -352,6 +353,20 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 			{
 				this.Physics.Collider = this.Transform;
 			}
+
+
+			socket.on('MoveOther', function (data) 
+			{
+				console.log(data);
+				 if (data.id == _self.id && !_self.isMoving) 
+				 {
+				 	_self.StartPosition = _self.IndexToPixel(_self.Transform.IndexPosition);
+					_self.nextIndex = new Vector(data.x, data.y);
+					_self.EndPosition = _self.IndexToPixel(_self.nextIndex);
+					_self.isMoving = true;
+					_self.Transform.direction = data.direction;
+				 }
+			})
 
 			this.started = true;
 			Print('System:GameObject ' + this.name + " Started !");
@@ -420,6 +435,7 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 						id : _self.id,
 						x : _self.nextIndex.x,
 						y : _self.nextIndex.y,
+						direction: "Left"
 					})
 
 				}
@@ -436,6 +452,7 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 						id : _self.id,
 						x : _self.nextIndex.x,
 						y : _self.nextIndex.y,
+						direction : "Right"
 					})
 
 				}
@@ -452,6 +469,7 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 						id : _self.id,
 						x : _self.nextIndex.x,
 						y : _self.nextIndex.y,
+						direction : "Up"
 					})
 
 				}
@@ -468,52 +486,20 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 						id : _self.id,
 						x : _self.nextIndex.x,
 						y : _self.nextIndex.y,
+						direction : "Down"
 					})
 
 				}
 			}
-			else
-			{
-				this.Renderer.Material.Source = Images["PlayerJump" + this.Transform.direction];
-
-				this.Transform.Position.x = Tween.TweenGrid(this.Transform.Position.x, this.StartPosition.x, this.EndPosition.x, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
-				this.Transform.Position.y = Tween.TweenGrid(this.Transform.Position.y, this.StartPosition.y, this.EndPosition.y, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
-				
-				var middle = Math.abs( (this.EndPosition.x - this.StartPosition.x) / 2 + ( (this.EndPosition.y - this.StartPosition.y) / 2 ));
-				var pos = Math.abs(this.Transform.Position.x - this.StartPosition.x + this.Transform.Position.y - this.StartPosition.y );
-
-				if ( pos < middle ) 
-				{
-					var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x, this.BaseScale.x * 1.75, 2 *1.75 *Time.deltaTime,0.01);
-					this.Transform.Scale.x = t;
-					this.Transform.Scale.y = t;
-				}
-				else
-				{
-					var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x * 1.75, this.BaseScale.x, 2 * 1.75 * Time.deltaTime,0.01);	
-					this.Transform.Scale.x = t;
-					this.Transform.Scale.y = t;
-				}
-
-
-				if (this.Transform.Position.x == this.EndPosition.x && this.Transform.Position.y == this.EndPosition.y  ) 
-				{
-					this.isMoving = false;
-					this.Transform.IndexPosition = this.nextIndex;
-					var index = IndexFromCoord(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y, this.Grid.cases);
-
-					if (this.Grid.Color[index] != this.color) 
-					{
-						this.Grid.Color[index] = this.color;
-						this.Grid.ColorSize[index] = 0;
-					}
-				}
-			}
+			
 		}
-
+		if (this.isMoving) this.ApplyTween();
+		
 		this.PostUpdate();	
 	};
 
+
+	
 
 	/**
 	 * @function PostUpdate
@@ -590,6 +576,39 @@ function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo)
 		v.x = _position.x * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.x; 
 		v.y = _position.y * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.y; 
 		return v;
+	}
+	this.ApplyTween = function () 
+	{
+		this.Renderer.Material.Source = Images["PlayerJump" + this.Transform.direction];
+
+		this.Transform.Position.x = Tween.TweenGrid(this.Transform.Position.x, this.StartPosition.x, this.EndPosition.x, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
+		this.Transform.Position.y = Tween.TweenGrid(this.Transform.Position.y, this.StartPosition.y, this.EndPosition.y, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
+		
+		var middle = Math.abs( (this.EndPosition.x - this.StartPosition.x) / 2 + ( (this.EndPosition.y - this.StartPosition.y) / 2 ));
+		var pos = Math.abs(this.Transform.Position.x - this.StartPosition.x + this.Transform.Position.y - this.StartPosition.y )
+		if ( pos < middle ) 
+		{
+			var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x, this.BaseScale.x * 1.75, 2 *1.75 *Time.deltaTime,0.01);
+			this.Transform.Scale.x = t;
+			this.Transform.Scale.y = t;
+		}
+		else
+		{
+			var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x * 1.75, this.BaseScale.x, 2 * 1.75 * Time.deltaTime,0.01);	
+			this.Transform.Scale.x = t;
+			this.Transform.Scale.y = t;
+		}
+		if (this.Transform.Position.x == this.EndPosition.x && this.Transform.Position.y == this.EndPosition.y  ) 
+		{
+			this.isMoving = false;
+			this.Transform.IndexPosition = this.nextIndex;
+			var index = IndexFromCoord(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y, this.Grid.cases)
+			if (this.Grid.Color[index] != this.color) 
+			{
+				this.Grid.Color[index] = this.color;
+				this.Grid.ColorSize[index] = 0;
+			}
+		}
 	}
 
 	this.Awake();

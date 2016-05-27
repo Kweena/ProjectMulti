@@ -75,15 +75,10 @@ var io = require('socket.io')(server);
 io.on('connection', function(socket) 
 {
 	Sockets[socket.id] = socket;
+	console.log(socket.id);
 	socket.emit('CheckConnection',socket.id);
 	socket.on("ConnectionOK",function (socketID) 
 	{
-		if (host == null) 
-		{
-			console.log(Sockets[socketID])
-			Sockets[socketID].emit('IsHost',true);
-			host = socketID;
-		}
 		Clients.push(socketID);
 		console.log('Player Connected', socketID , "Nb",Clients.length);
 		io.emit('PlayersConnected',Clients.length)
@@ -117,20 +112,15 @@ io.on('connection', function(socket)
 			Sockets[Clients[i]].emit('StartGame',myData);
 		}
 	})
-
 	socket.on('Move', function (data) 
-	{
-		socket.broadcast.emit('MoveOther',data);
-	})
-
+ 	{
+ 		console.log(data);
+ 		socket.broadcast.emit('MoveOther',data);
+ 	})
 });
 
 var Clients = [];
 var Players = [];
-
-
-
-
 
 // Import Random.js
 Math.Random = {};

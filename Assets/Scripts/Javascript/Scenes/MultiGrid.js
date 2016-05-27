@@ -173,6 +173,7 @@ function MultiGrid(_parameters)
 			this.Scores.push(score);
 		}
 		this.SetAllScorePosition();
+		
 		this.MyPlayer = this.Players[this.Parameters.id];
 		this.MyPlayer.isMyPlayer = true;
 	}
