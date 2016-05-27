@@ -123,25 +123,23 @@ io.on('connection', function(socket)
 		{
 			Players = [];
 			Clients = [];
-			Socket = {};
+			Sockets = {};
 			host = null; 
 		}, time + 3);
 
-		setTimeout(function (argument) {
-			DropItems(_length);
-		}, Math.Random.RangeInt(20,40,true))
+		for (var i = 0; i < Clients.length; i++) {
+			console.console.log()
+			Sockets[Clients[i]].emit('SetItemPoint',{x:1,y:1});
+		}
+		//io.emit("SetItemPoint",{x:1,y:1});
 
 	})
 	socket.on('Move', function (data) 
  	{
  		console.log(data);
- 		Players[data.id].x = data.x;
- 		Players[data.id].y = data.y;
+ 		//Players[data.id].x = data.x;
+ 		//Players[data.id].y = data.y;
  		socket.broadcast.emit('MoveOther',data);
- 	})
- 	socket.on('SetScore', function (data) 
- 	{
- 		console.log("Get Score",data.id);
  	})
 });
 
@@ -207,33 +205,4 @@ function SetColors()
 		colors.push(c);
 	}
 	return colors;
-}
-
-function DropItems (_length) 
-{
-	var v = {
-		x: Math.Random.RangeInt(0,_length - 1,true),
-		y: Math.Random.RangeInt(0,_length - 1,true)
-	};
-	var ok = true;
-	for (var j = 0; j < Player.length; j++) 
-	{
-		if (Player[j].x == v.x && Player[j].y == v.y) 
-		{
-			i--;
-			ok = false;
-			break;
-		}
-	}
-	if (ok) 
-	{
-		DropItems(_length);
-	}
-	else 
-	{
-		socket.emit('SetItemPoint', {x: v.x, y: v.y});
-		setTimeout(function (argument) {
-			DropItems(_length);
-		}, Math.Random.RangeInt(20,40,true))
-	}
 }
