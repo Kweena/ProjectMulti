@@ -69,27 +69,6 @@ function MultiGrid(_parameters)
 			// operation start
 			 
 			this.AddPlayer();
-			// var p = new Player(0,0,scaling,scaling, 2 * this.Grid.caseLength, this.Grid, "#BADA55", 1);
-			// var p1 = new Player(1,1,scaling,scaling, 2 * this.Grid.caseLength, this.Grid, "#1ce" , 2);
-			// var p2 = new Player(3,3,scaling,scaling, 2 * this.Grid.caseLength, this.Grid, "#b00b13", 3);
-			// this.Players.push(p);
-			// this.Players.push(p1, p2);
-			// p.score = 3;
-			// p1.pseudo = "Ricco7La";
-			// p1.score = 2;
-			// p2.pseudo = "Kweena";
-			// p2.score = 1;
-
-
-			var posX = canvas.width - (canvas.width - canvas.height) * 0.5;
-			var scoreGroup = new ScoreGroup(new Vector(posX * 1.05, 10), new Vector((canvas.width - canvas.height) * 0.45, canvas.height));
-			this.Scores.push(scoreGroup);
-
-			var score = new ScorePanel(p, scoreGroup.Transform.Size.x * 0.5, 100);
-			var score1 = new ScorePanel(p1, scoreGroup.Transform.Size.x * 0.5, 150);
-			var score2 = new ScorePanel(p2, scoreGroup.Transform.Size.x * 0.5, 200);
-			this.Scores.push(score, score1, score2);
-			this.SetAllScorePosition();
 
 			this.started = true;
 
@@ -182,11 +161,18 @@ function MultiGrid(_parameters)
 		this.Grid.ChangeSize(this.Parameters.StartPos.length * 2);
 		var scaling = (this.Grid.caseLength / Images["Player"].width) * 0.45;
 
+		var posX = canvas.width - (canvas.width - canvas.height) * 0.5;
+		var scoreGroup = new ScoreGroup(new Vector(posX * 1.05, 10), new Vector((canvas.width - canvas.height) * 0.45, canvas.height));
+		this.Scores.push(scoreGroup);
+
 		for (var i = 0; i < this.Parameters.StartPos.length; i++)
 		{	
 			var player = new Player(this.Parameters.StartPos[i].x, this.Parameters.StartPos[i].y, scaling, scaling, 2 * this.Grid.caseLength, this.Grid, this.Parameters.color, i);
 			this.Players.push(player);
+			var score = new ScorePanel(player, scoreGroup.Transform.Size.x * 0.5, 100);
+			this.Scores.push(score);
 		}
+		this.SetAllScorePosition();
 		this.MyPlayer = this.Players[this.Parameters.id];
 	}
 
