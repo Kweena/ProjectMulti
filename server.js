@@ -127,8 +127,9 @@ io.on('connection', function(socket)
 			host = null; 
 		}, time + 3);
 
-		for (var i = 0; i < Clients.length; i++) {
-			console.console.log()
+		for (var i = 0; i < Clients.length; i++) 
+		{
+			console.log(Clients[i]);
 			Sockets[Clients[i]].emit('SetItemPoint',{x:1,y:1});
 		}
 		//io.emit("SetItemPoint",{x:1,y:1});

@@ -68,6 +68,7 @@ function MultiGrid(_parameters)
 		{
 			Time.SetTimeWhenSceneBegin();
 
+			console.log(socket);
 			socket.on('SetItemPoint', function (_data) 
 			{
 				console.log(_data)
