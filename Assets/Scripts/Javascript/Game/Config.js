@@ -44,6 +44,10 @@ var ImagesPath =
 	{name: "ItemPoint", path: "MultiColor/greenCrystal.png"},
 	{name: "Player", path: "MultiColor/PlayerRed.png"},
 	{name: "PlayerJump", path: "MultiColor/PlayerRedJump.png"},
+	{name: "PlayerJumpLeft", path: "MultiColor/PlayerRedJumpLeft.png"},
+	{name: "PlayerJumpUp", path: "MultiColor/PlayerRedJumpUp.png"},
+	{name: "PlayerJumpRight", path: "MultiColor/PlayerRedJumpRight.png"},
+	{name: "PlayerJumpDown", path: "MultiColor/PlayerRedJumpDown.png"},
 	{name: "Tiles", path: "MultiColor/TilesGrey.png"},
 	{name: "Panel", path: "MultiColor/panel.png"},
 	{name: "Title", path: "MultiColor/title.png"}

@@ -26,7 +26,7 @@
  *
  *
  * */
-function Player(_x, _y, _grid,_color, _rank, _pseudo) 
+function Player(_x, _y, _scaleX, _scaleY, _speed, _grid,_color, _id, _pseudo) 
 {
 	this.name = "Player";
 	this.enabled = true;
@@ -36,12 +36,13 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 	this.lastMove = Time.Time;
 	this.color = _color;
 	this.isMoving = false;
-	this.speed = 225;
+	this.speed = _speed;
 	this.score = 0;
 	
 	this.Grid = _grid;
-	this.pseudo = _pseudo || "Player" + _rank; 
-	this.rank = _rank;
+	this.rank = _id;
+	this.pseudo = _pseudo || "Player" + _id; 
+	this.rank = _id;
 	
 	this.MouseOffset = new Vector();
 
@@ -51,11 +52,14 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 	this.Transform.RelativePosition = new Vector();
 	this.Transform.Position = new Vector();
 	this.Transform.Size = new Vector(36,45);
-	this.Transform.RelativeScale = new Vector(1,1);
-	this.Transform.Scale = new Vector(1,1);
+	this.Transform.RelativeScale = new Vector(_scaleX,_scaleY);
+	this.Transform.Scale = new Vector(_scaleX,_scaleY);
 	this.Transform.Pivot = new Vector(.5,.5);
 	this.Transform.angle = 0;
 	this.Transform.IndexPosition = new Vector(_x,_y);
+	this.Transform.direction = null;
+
+	this.BaseScale = new Vector(_scaleX,_scaleY);
 
 	//Tween
 	this.StartPosition = new Vector();
@@ -375,9 +379,7 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 					this.Transform.Position.x = this.Transform.IndexPosition.x * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.x; 
 					this.Transform.Position.y = this.Transform.IndexPosition.y * this.Grid.caseLength + this.Grid.caseLength / 2 + Application.LoadedScene.offsetGrid.y; 
 				}
-			}
-			
-			
+			}	
 			this.Update();
 		}
 			
@@ -407,6 +409,8 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 				this.nextIndex = new Vector(this.Transform.IndexPosition.x - 1, this.Transform.IndexPosition.y);
 				this.EndPosition = this.IndexToPixel(this.nextIndex);
 				this.isMoving = true;
+				this.Transform.direction = "Left";
+
 			}
 			//right
 			else if (Input.KeysDown[39] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 2)) 
@@ -415,6 +419,8 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 				this.nextIndex = new Vector(this.Transform.IndexPosition.x + 1, this.Transform.IndexPosition.y);
 				this.EndPosition = this.IndexToPixel(this.nextIndex);
 				this.isMoving = true;
+				this.Transform.direction = "Right";
+
 			}
 			//up
 			else if (Input.KeysDown[38] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 1)) 
@@ -423,6 +429,8 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 				this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y - 1);
 				this.EndPosition = this.IndexToPixel(this.nextIndex);
 				this.isMoving = true;
+				this.Transform.direction = "Up";
+
 			}
 			//down
 			else if (Input.KeysDown[40] && Physics.TileCollision(this.Grid.Tiles, [0], new Vector(this.Grid.cases,this.Grid.cases), this.Transform.IndexPosition, 3)) 
@@ -431,11 +439,13 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 				this.nextIndex = new Vector(this.Transform.IndexPosition.x, this.Transform.IndexPosition.y + 1);
 				this.EndPosition = this.IndexToPixel(this.nextIndex);
 				this.isMoving = true;
+				this.Transform.direction = "Down";
+
 			}
 		}
 		else
 		{
-			this.Renderer.Material.Source = Images["PlayerJump"];
+			this.Renderer.Material.Source = Images["PlayerJump" + this.Transform.direction];
 
 			this.Transform.Position.x = Tween.TweenGrid(this.Transform.Position.x, this.StartPosition.x, this.EndPosition.x, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
 			this.Transform.Position.y = Tween.TweenGrid(this.Transform.Position.y, this.StartPosition.y, this.EndPosition.y, this.speed*Time.deltaTime, this.Grid.caseLength * 0.01 )
@@ -445,13 +455,13 @@ function Player(_x, _y, _grid,_color, _rank, _pseudo)
 
 			if ( pos < middle ) 
 			{
-				var t = Tween.TweenGrid(this.Transform.Scale.x, 1, 1.5, Time.deltaTime,0.001);
+				var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x, this.BaseScale.x * 1.75, 2 *1.75 *Time.deltaTime,0.01);
 				this.Transform.Scale.x = t;
 				this.Transform.Scale.y = t;
 			}
 			else
 			{
-				var t = Tween.TweenGrid(this.Transform.Scale.x, 1.5, 1, Time.deltaTime,0.001);	
+				var t = Tween.TweenGrid(this.Transform.Scale.x, this.BaseScale.x * 1.75, this.BaseScale.x, 2 * 1.75 * Time.deltaTime,0.01);	
 				this.Transform.Scale.x = t;
 				this.Transform.Scale.y = t;
 			}

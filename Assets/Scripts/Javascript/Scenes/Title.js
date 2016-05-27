@@ -64,8 +64,8 @@ function Title()
 	 * */
 	this.Update = function() 
 	{
-		ctx.fillStyle = "#E8FFBC";
-		ctx.fillRect(0,0,canvas.width,canvas.height);
+		//ctx.fillStyle = "#E8FFBC";
+		//ctx.fillRect(0,0,canvas.width,canvas.height);
 
 		var iw = Images["Title"].width;
 		var ih = Images["Title"].height;

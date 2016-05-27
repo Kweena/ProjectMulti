@@ -62,9 +62,11 @@ function MultiGrid()
 		{
 			Time.SetTimeWhenSceneBegin();
 			// operation start
-			var p = new Player(0,0,this.Grid, "#BADA55", 1);
-			var p1 = new Player(1,1,this.Grid, "#1ce" , 2);
-			var p2 = new Player(3,3,this.Grid, "#b00b13", 3);
+			var scaling = (this.Grid.caseLength / Images["Player"].width) * 0.45; 
+
+			var p = new Player(0,0,scaling,scaling, 2 * this.Grid.caseLength, this.Grid, "#BADA55", 1);
+			var p1 = new Player(1,1,scaling,scaling, 2 * this.Grid.caseLength, this.Grid, "#1ce" , 2);
+			var p2 = new Player(3,3,scaling,scaling, 2 * this.Grid.caseLength, this.Grid, "#b00b13", 3);
 			this.Players.push(p);
 			this.Players.push(p1, p2);
 			p.score = 3;
@@ -72,11 +74,6 @@ function MultiGrid()
 			p1.score = 2;
 			p2.pseudo = "Kweena";
 			p2.score = 1;
-
-			var scaling = (this.Grid.caseLength / Images["Player"].width) * 0.5; 
-			p.Transform.Scale.Mul(scaling);
-			p1.Transform.Scale.Mul(scaling);
-			p2.Transform.Scale.Mul(scaling);
 			
 			var item = new ItemPoint(2,2)
 			this.Items.push(item);
@@ -129,27 +126,7 @@ function MultiGrid()
 			{
 				this.Scores[i].Start();
 			}
-
-			for (var i = 0; i < this.Players.length; i++) 
-			{
-				for (var j = 0; j < this.Items.length; j++) 
-				{
-					if (this.Players[i].Transform.IndexPosition.x == this.Items[j].Transform.IndexPosition.x && this.Players[i].Transform.IndexPosition.y == this.Items[j].Transform.IndexPosition.y ) 
-					{
-						this.Items.splice(j,1);
-						j--;
-						for (var k = 0; k < this.Grid.Color.length; k++) 
-						{
-							if (this.Grid.Color[k] == this.Players[i].color) 
-							{
-								delete this.Grid.Color[k];
-								this.Players[i].score ++;
-							}
-						}
-						this.SortScore(this.Players[i]);
-					}
-				}
-			}
+			this.CheckCollisionItems();
 		}
 
 		if (Application.debugMode) 
@@ -170,6 +147,30 @@ function MultiGrid()
 		else 
 		{
 			// Show pause menu
+		}
+	}
+
+	this.CheckCollisionItems = function()
+	{
+		for (var i = 0; i < this.Players.length; i++) 
+		{
+			for (var j = 0; j < this.Items.length; j++) 
+			{
+				if (this.Players[i].Transform.IndexPosition.x == this.Items[j].Transform.IndexPosition.x && this.Players[i].Transform.IndexPosition.y == this.Items[j].Transform.IndexPosition.y ) 
+				{
+					this.Items.splice(j,1);
+					j--;
+					for (var k = 0; k < this.Grid.Color.length; k++) 
+					{
+						if (this.Grid.Color[k] == this.Players[i].color) 
+						{
+							delete this.Grid.Color[k];
+							this.Players[i].score ++;
+						}
+					}
+					this.SortScore(this.Players[i]);
+				}
+			}
 		}
 	}
 

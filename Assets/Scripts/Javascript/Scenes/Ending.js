@@ -65,8 +65,9 @@ function Ending(_scores)
 	 * */
 	this.Update = function() 
 	{
-		ctx.fillStyle = "#E8FFBC"
-		ctx.fillRect(0,0,canvas.width,canvas.height);
+		//ctx.fillStyle = "#E8FFBC"
+		//ctx.fillRect(0,0,canvas.width,canvas.height);
+
 		ctx.font = '50px Arial';
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
