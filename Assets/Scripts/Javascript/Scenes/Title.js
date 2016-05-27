@@ -150,10 +150,23 @@ function Title()
 
 		if (time % 3 != 0)
 		{
+			var text = ''
 			ctx.font = '40px Arial';
 			ctx.textAlign = 'center';
 			ctx.fillStyle = 'red';
-			ctx.fillText('Click for launch the game', canvas.width * 0.5,canvas.height - 50 );
+			if (!this.isHost) 
+			{
+				text = 'Waiting for connection'	;
+			}
+			else if (this.nbrPlayers < 2)
+			{
+				text = 'waiting for more players';
+			}
+			else 
+			{
+				text = 'Click for launch the game';
+			}
+			ctx.fillText(text, canvas.width * 0.5,canvas.height - 50 );
 		}
 	}
 

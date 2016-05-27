@@ -24,7 +24,7 @@ function MultiGrid(_parameters)
 	this.Scores =  [];
 	this.newScore = null;
 
-	this.timer = new Timer(20);
+	this.timer = new Timer(_parameters.Timer);
 
 	this.MyPlayer = null;
 
