@@ -59,16 +59,11 @@ function Title()
 				{	
 					socket.emit("Ready");	
 					console.log("We are Ready");		
-					
 				}
-				// Scenes["MultiGrid"] = new MultiGrid();
-				// Application.LoadedScene = Scenes["MultiGrid"];
-				// window.removeEventListener('click',fn);
-
+				window.removeEventListener('click',fn);
 			};
 			window.addEventListener('click',fn);
 			
-
 			socket.on('CheckConnection',function(_data)
 			{
 				socket.emit('ConnectionOK',_data);
@@ -80,6 +75,12 @@ function Title()
 				_self.nbrPlayers = _nbrPlayers;
 				console.log("P :" + _nbrPlayers);
 
+			})
+
+			socket.on('StartGame', function(_data)
+			{
+				Scenes["MultiGrid"] = new MultiGrid(_data);
+				Application.LoadedScene = Scenes["MultiGrid"];
 			})
 
 
