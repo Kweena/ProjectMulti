@@ -51,14 +51,22 @@ function Title()
 			var fn = function(e)
 			{
 				console.log(_self);
-				if (_self.nbrPlayers < 2 ) 
+				if (!_self.isHost ) 
 				{
 					console.log("waiting for player");
 				}
 				else
 				{	
-					socket.emit("Ready");	
-					console.log("We are Ready");		
+					if (_self.nbrPlayers < 2) 
+					{
+						console.log("you need 2 player");
+					}
+					else 
+					{
+						socket.emit("Ready");	
+						console.log("We are Ready");
+					}
+							
 				}
 				window.removeEventListener('click',fn);
 			};
