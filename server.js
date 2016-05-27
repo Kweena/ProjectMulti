@@ -71,7 +71,9 @@ var io = require('socket.io')(server);
 
 io.on('connection', function(socket) 
 {
-	console.log('Player Connected');
+	Clients.push(socket);
+	console.log('Player Connected', socket);
+	socket.emit('PlayersConnected',Clients.length)
 	socket.on('restartgame', function (data) 
 	{
 		console.log('restartgame');
@@ -82,5 +84,17 @@ io.on('connection', function(socket)
 		console.log("Player Disconected");
 
 	});
+	socket.on('Ready', function (data) 
+	{
+		for (var i = 0; i < Clients.length; i++) 
+		{
+			var myData;
+			Clients[i].emit('StartGame',myData);
+		}
+		
+	})
 
 });
+
+var Clients = [];
+var Players = [];
