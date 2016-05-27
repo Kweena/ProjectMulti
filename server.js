@@ -74,13 +74,13 @@ io.on('connection', function(socket)
 {
 	Sockets[socket.id] = socket;
 	socket.emit('CheckConnection',socket.id);
-	socket.on("ConnectionOK",function (socket) 
+	socket.on("ConnectionOK",function (socketID) 
 	{
-		Clients.push(socket);
-		console.log('Player Connected', socket , "Nb",Clients.length);
+		Clients.push(socketID);
+		console.log('Player Connected', socketID , "Nb",Clients.length);
+		io.emit('PlayersConnected',Clients.length)
 	});
 	
-	io.emit('PlayersConnected',Clients.length)
 	socket.on('restartgame', function (data) 
 	{
 		console.log('restartgame');
@@ -89,26 +89,69 @@ io.on('connection', function(socket)
 	socket.on('disconnect', function (data) 
 	{
 
-		console.log("Player Disconected",data);
+		console.log("Player Disconected");
 
 	});
 	socket.on('Ready', function (data) 
 	{
 		console.log('Ready')
+		var length = Clients.length * 2;
+		var sp = SetPosition(length);
 		for (var i = 0; i < Clients.length; i++) 
 		{
 			var myData = 
 			{
 				id: i,
-				StartPos: {},
-				color: 1
+				StartPos: sp,
+				color: Math.Random.ColorHEX()
 			};
 			Sockets[Clients[i]].emit('StartGame',myData);
 		}
-		
 	})
-
 });
 
 var Clients = [];
 var Players = [];
+
+// Import Random.js
+Math.Random = {};
+Math.Random.RangeInt = function(_min, _max, _isInclusive)
+{
+	if(typeof _min != 'number') PrintErr("Parameter minimum in RangeInt");
+    if(typeof _max != 'number') PrintErr("Parameter maximum in RangeInt");
+    if(typeof _isInclusive != 'boolean') PrintErr("Parameter isInclusive in RangeInt");
+	_isInclusive ? _max++ : _min++;
+	return Math.floor(Math.random() * (_max - _min) + _min); 
+};
+Math.Random.ColorHEX = function() 
+{
+	var letters = [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F'];
+    var color = '#';
+    for (var i = 0; i < 6; i++ )
+    {
+        color += letters[Math.Random.RangeInt(0,letters.length,false)];
+    }
+    return color;
+};
+
+function SetPosition (_length) 
+{
+	var sp = [];
+	for (var i = 0; i < Clients.length; i++) 
+	{
+		var v = {
+			x: Math.Random.RangeInt(0,_length,true),
+			y: Math.Random.RangeInt(0,_length,true)
+		};
+		for (var j = 0; j < sp.length; j++) 
+		{
+			if (sp.x == v.x && sp.y == v.y) 
+			{
+				i--;
+				break;
+			}
+		}
+		sp.push(v);
+	}
+	return sp;
+}
