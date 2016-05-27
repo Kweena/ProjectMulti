@@ -101,7 +101,7 @@ io.on('connection', function(socket)
 			{
 				id: i,
 				StartPos: {},
-				color: 
+				color: 1
 			};
 			Sockets[Clients[i]].emit('StartGame',myData);
 		}
