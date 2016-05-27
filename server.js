@@ -81,9 +81,14 @@ io.on('connection', function(socket)
 	{
 		Clients.push(socketID);
 		console.log('Player Connected', socketID , "Nb",Clients.length);
+		if (host == null) 
+		{
+			console.log("emit host");
+			socket.emit("IsHost",true);
+			host = socket.id;
+		}
 		io.emit('PlayersConnected',Clients.length)
 	});
-	
 	socket.on('restartgame', function (data) 
 	{
 		console.log('restartgame');
@@ -101,16 +106,25 @@ io.on('connection', function(socket)
 		var length = Clients.length * 2;
 		var sp = SetPosition(length);
 		var mycolors = SetColors();
+		var time = 30
 		for (var i = 0; i < Clients.length; i++) 
 		{
 			var myData = 
 			{
 				id: i,
 				StartPos: sp,
-				Colors: mycolors
+				Colors: mycolors,
+				Timer: time
 			};
 			Sockets[Clients[i]].emit('StartGame',myData);
 		}
+		// To test
+		setTimeout(function () 
+		{
+			Players = [];
+			Clients = [];
+			Socket = {}; 
+		}, time + 3);
 	})
 	socket.on('Move', function (data) 
  	{

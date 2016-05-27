@@ -24,7 +24,7 @@ function MultiGrid(_parameters)
 	this.Scores =  [];
 	this.newScore = null;
 
-	this.timer = new Timer(20);
+	this.timer = new Timer(120);
 
 	this.MyPlayer = null;
 
@@ -173,7 +173,7 @@ function MultiGrid(_parameters)
 			this.Scores.push(score);
 		}
 		this.SetAllScorePosition();
-		
+
 		this.MyPlayer = this.Players[this.Parameters.id];
 		this.MyPlayer.isMyPlayer = true;
 	}
