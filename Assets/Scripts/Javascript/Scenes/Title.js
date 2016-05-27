@@ -22,6 +22,7 @@ function Title()
 	this.AlphaMask = null;
 	this.started = false;
 	this.nbrPlayers = 0;
+	this.isHost = false;
 
 	this.WorldSize = new Vector(4096,4096);
 
@@ -64,24 +65,28 @@ function Title()
 			};
 			window.addEventListener('click',fn);
 			
-			socket.on('CheckConnection',function(_data)
+			socket.on('CheckConnection', function(_data)
 			{
 				socket.emit('ConnectionOK',_data);
-			})
+			});
 
+			socket.on('IsHost', function(_bool)
+			{
+				_self.isHost = _bool;
+			});
 
 			socket.on('PlayersConnected', function(_nbrPlayers) 
 			{
 				_self.nbrPlayers = _nbrPlayers;
 				console.log("P :" + _nbrPlayers);
 
-			})
+			});
 
 			socket.on('StartGame', function(_data)
 			{
 				Scenes["MultiGrid"] = new MultiGrid(_data);
 				Application.LoadedScene = Scenes["MultiGrid"];
-			})
+			});
 
 
 			this.started = true;
