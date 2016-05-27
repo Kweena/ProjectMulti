@@ -7,7 +7,9 @@ var http = require("http");
 var path = require("path"); 
 var fs = require("fs"); 
 
-var Sockets = {};	
+var Sockets = {};
+
+var host = null;
 
 //console.log("Starting web server at " + serverUrl + ":" + port);
 
@@ -76,6 +78,11 @@ io.on('connection', function(socket)
 	socket.emit('CheckConnection',socket.id);
 	socket.on("ConnectionOK",function (socketID) 
 	{
+		if (host == null) 
+		{
+			Sockets[socketID].emit('IsHost',true);
+			host = socketID;
+		}
 		Clients.push(socketID);
 		console.log('Player Connected', socketID , "Nb",Clients.length);
 		io.emit('PlayersConnected',Clients.length)
@@ -97,13 +104,14 @@ io.on('connection', function(socket)
 		console.log('Ready')
 		var length = Clients.length * 2;
 		var sp = SetPosition(length);
+		var mycolors = SetColors();
 		for (var i = 0; i < Clients.length; i++) 
 		{
 			var myData = 
 			{
 				id: i,
 				StartPos: sp,
-				color: Math.Random.ColorHEX()
+				Colors: mycolors
 			};
 			Sockets[Clients[i]].emit('StartGame',myData);
 		}
@@ -134,18 +142,18 @@ Math.Random.ColorHEX = function()
     return color;
 };
 
-function SetPosition (_length) 
+function SetPosition(_length) 
 {
 	var sp = [];
 	for (var i = 0; i < Clients.length; i++) 
 	{
 		var v = {
-			x: Math.Random.RangeInt(0,_length,true),
-			y: Math.Random.RangeInt(0,_length,true)
+			x: Math.Random.RangeInt(0,_length - 1,true),
+			y: Math.Random.RangeInt(0,_length - 1,true)
 		};
 		for (var j = 0; j < sp.length; j++) 
 		{
-			if (sp.x == v.x && sp.y == v.y) 
+			if (sp[j].x == v.x && sp[j].y == v.y) 
 			{
 				i--;
 				break;
@@ -154,4 +162,22 @@ function SetPosition (_length)
 		sp.push(v);
 	}
 	return sp;
+}
+function SetColors() 
+{
+	var colors = [];
+	for (var i = 0; i < Clients.length; i++) 
+	{
+		var c =Math.Random.ColorHEX();
+		for (var j = 0; j < colors.length; j++) 
+		{
+			if (colors[j] == c) 
+			{
+				i--;
+				break;
+			}
+		}
+		colors.push(c);
+	}
+	return colors;
 }
