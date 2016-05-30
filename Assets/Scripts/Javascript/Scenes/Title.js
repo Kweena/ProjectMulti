@@ -21,6 +21,8 @@ function Title()
 	this.CurrentCamera = null;
 	this.AlphaMask = null;
 	this.started = false;
+	this.nbrPlayers = 0;
+	this.isHost = false;
 
 	this.WorldSize = new Vector(4096,4096);
 
@@ -43,14 +45,59 @@ function Title()
 		{
 			Time.SetTimeWhenSceneBegin();
 			// operation start
-
+			var url = 'http://10.10.7.52:8000';
+			socket = io.connect(url);
+			var _self = this;
 			var fn = function(e)
 			{
-				Scenes["MultiGrid"] = new MultiGrid();
-				Application.LoadedScene = Scenes["MultiGrid"];
+				//console.log(_self);
+				if (!_self.isHost ) 
+				{
+					console.log("waiting for player");
+				}
+				else
+				{	
+					if (_self.nbrPlayers < 2) 
+					{
+						console.log("you need 2 player");
+					}
+					else 
+					{
+						socket.emit("Ready");	
+						console.log("We are Ready");
+					}
+							
+				}
 				window.removeEventListener('click',fn);
 			};
 			window.addEventListener('click',fn);
+			
+			socket.on('CheckConnection', function(_data)
+			{
+				console.log('checked')
+				socket.emit('ConnectionOK',_data);
+			});
+
+			socket.on('IsHost', function(_bool)
+			{
+				//console.log(_bool)
+				_self.isHost = _bool;
+			});
+
+			socket.on('PlayersConnected', function(_nbrPlayers) 
+			{
+				_self.nbrPlayers = _nbrPlayers;
+				//console.log("P :" + _nbrPlayers);
+
+			});
+
+			socket.on('StartGame', function(_data)
+			{
+				//console.log(_data);
+				Scenes["MultiGrid"] = new MultiGrid(_data);
+				Application.LoadedScene = Scenes["MultiGrid"];
+			});
+
 
 			this.started = true;
 			Print('System:Scene ' + this.name + " Started !");
@@ -111,10 +158,23 @@ function Title()
 
 		if (time % 3 != 0)
 		{
+			var text = ''
 			ctx.font = '40px Arial';
 			ctx.textAlign = 'center';
 			ctx.fillStyle = 'red';
-			ctx.fillText('Click for launch the game', canvas.width * 0.5,canvas.height - 50 );
+			if (!this.isHost) 
+			{
+				text = 'Waiting for connection'	;
+			}
+			else if (this.nbrPlayers < 2)
+			{
+				text = 'waiting for more players';
+			}
+			else 
+			{
+				text = 'Click for launch the game';
+			}
+			ctx.fillText(text, canvas.width * 0.5,canvas.height - 50 );
 		}
 	}
 

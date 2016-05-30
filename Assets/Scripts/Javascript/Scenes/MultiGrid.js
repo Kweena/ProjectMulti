@@ -12,7 +12,7 @@
  * 
  * @return {Scene}
  * */
-function MultiGrid() 
+function MultiGrid(_parameters) 
 {
 	this.name = "MultiGrid";
 	//this.GameObjects =[];
@@ -24,9 +24,14 @@ function MultiGrid()
 	this.Scores =  [];
 	this.newScore = null;
 
-	this.timer = new Timer(20);
+	this.timer = new Timer(_parameters.Timer);
 
+	this.MyPlayer = null;
 
+	this.Parameters = {};
+	this.Parameters.id = _parameters.id;
+	this.Parameters.StartPos = _parameters.StartPos;
+	this.Parameters.Colors = _parameters.Colors;
 
 	var bigger = canvas.width > canvas.height ? canvas.width : canvas.height;
 	var smaller = canvas.width < canvas.height ? canvas.width : canvas.height;
@@ -58,35 +63,23 @@ function MultiGrid()
 	 * */
 	this.Start = function() 
 	{
+		var _self = this;
 		if (!this.started) 
 		{
 			Time.SetTimeWhenSceneBegin();
+
+			//console.log(socket);
+			socket.on('SetItemPoint', function (_data) 
+			{
+				//console.log(_data)
+				 var item = new ItemPoint(_data.x,_data.y);
+				 _self.Items.push(item);
+			});
+
+
 			// operation start
-			var scaling = (this.Grid.caseLength / Images["Player"].width) * 0.45; 
-
-			var p = new Player(0,0,scaling,scaling, 2 * this.Grid.caseLength, this.Grid, "#BADA55", 1);
-			var p1 = new Player(1,1,scaling,scaling, 2 * this.Grid.caseLength, this.Grid, "#1ce" , 2);
-			var p2 = new Player(3,3,scaling,scaling, 2 * this.Grid.caseLength, this.Grid, "#b00b13", 3);
-			this.Players.push(p);
-			this.Players.push(p1, p2);
-			p.score = 3;
-			p1.pseudo = "Ricco7La";
-			p1.score = 2;
-			p2.pseudo = "Kweena";
-			p2.score = 1;
-			
-			var item = new ItemPoint(2,2)
-			this.Items.push(item);
-
-			var posX = canvas.width - (canvas.width - canvas.height) * 0.5;
-			var scoreGroup = new ScoreGroup(new Vector(posX * 1.05, 10), new Vector((canvas.width - canvas.height) * 0.45, canvas.height));
-			this.Scores.push(scoreGroup);
-
-			var score = new ScorePanel(p, scoreGroup.Transform.Size.x * 0.5, 100);
-			var score1 = new ScorePanel(p1, scoreGroup.Transform.Size.x * 0.5, 150);
-			var score2 = new ScorePanel(p2, scoreGroup.Transform.Size.x * 0.5, 200);
-			this.Scores.push(score, score1, score2);
-			this.SetAllScorePosition();
+			 
+			this.AddPlayer();
 
 			this.started = true;
 
@@ -104,9 +97,14 @@ function MultiGrid()
 	{
 		if (!Application.gamePaused) 
 		{
+			if (this.newScore != null) 
+			{
+				this.Scores = this.newScore;
+				this.newScore = null;
+			}
 			this.Grid.Draw();
 
-			this.ShowTimer();
+			
 
 			for (var i = 0; i < this.Items.length; i++) 
 			{
@@ -116,16 +114,12 @@ function MultiGrid()
 			{
 				this.Players[i].Start();
 			}
-			if (this.newScore != null) 
-			{
-				this.Scores = this.newScore;
-				this.newScore = null;
-			}
 			this.Scores[0].Start();
 			for (var i = this.Scores.length-1; i > 0; i--) 
 			{
 				this.Scores[i].Start();
 			}
+			
 			this.CheckCollisionItems();
 		}
 
@@ -133,6 +127,9 @@ function MultiGrid()
 		{
 			Debug.DebugScene();
 		}
+
+		this.ShowTimer();
+
 		this.GUI();
 	}
 	/**
@@ -152,6 +149,7 @@ function MultiGrid()
 
 	this.CheckCollisionItems = function()
 	{
+		var _self = this;
 		for (var i = 0; i < this.Players.length; i++) 
 		{
 			for (var j = 0; j < this.Items.length; j++) 
@@ -169,43 +167,42 @@ function MultiGrid()
 						}
 					}
 					this.SortScore(this.Players[i]);
+					socket.emit('SetScore', 
+					{
+						id: _self.Players[i]
+					});
 				}
 			}
 		}
 	}
 
 	this.AddPlayer = function()
-	{
-		var player = new Player(this.Grid,Math.Random.ColorHEX());
-		//this.GameObjects.push(player);
-		this.Players.push(player);
+	{	
+		this.Grid.ChangeSize(this.Parameters.StartPos.length * 2);
+		var scaling = (this.Grid.caseLength / Images["Player"].width) * 0.45;
 
-		if(this.Players.length >= 2)
-		{
-			this.Grid.ChangeSize(this.Players.length * 2);
-		}
-		else
-		{
-			console.log("Wait for another player");
-		}
-	}
+		var posX = canvas.width - (canvas.width - canvas.height) * 0.5;
+		var scoreGroup = new ScoreGroup(new Vector(posX * 1.05, 10), new Vector((canvas.width - canvas.height) * 0.45, canvas.height));
+		this.Scores.push(scoreGroup);
 
-	this.RemovePlayer = function(_id)
-	{
-		//this.GameObjects.splice(this.player)
-		//Todo - remove player array
-		if(this.Players.length >= 2)
-		{
-			this.Grid.ChangeSize(this.Players.length * 2);
+		for (var i = 0; i < this.Parameters.StartPos.length; i++)
+		{	
+			var player = new Player(this.Parameters.StartPos[i].x, this.Parameters.StartPos[i].y, scaling, scaling, 2 * this.Grid.caseLength, this.Grid, this.Parameters.Colors[i], i);
+			this.Players.push(player);
+			var score = new ScorePanel(player, scoreGroup.Transform.Size.x * 0.5, 100);
+			this.Scores.push(score);
+			var index = IndexFromCoord(this.Parameters.StartPos[i].x, this.Parameters.StartPos[i].y,this.Grid.cases)
+			this.Grid.Color[index] = this.Parameters.Colors[i]
 		}
-		else
-		{
-			console.log("Wait for it");
-		}
+		this.SetAllScorePosition();
+
+		this.MyPlayer = this.Players[this.Parameters.id];
+		this.MyPlayer.isMyPlayer = true;
 	}
 
 	this.SortScore = function(_player)
 	{
+		//console.log('sorting', _player.id);
 		var changingRank = false;
 		var arrayCopy = this.Scores.splice(0);
 		for(var i = 1; i < arrayCopy.length; i++)

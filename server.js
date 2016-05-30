@@ -6,7 +6,11 @@ var serverUrl = app.get('port');//"127.0.0.1";
 var http = require("http");
 var path = require("path"); 
 var fs = require("fs"); 
-		
+
+var Sockets = {};
+var Clients = [];
+var Players = [];
+var host = null;
 
 //console.log("Starting web server at " + serverUrl + ":" + port);
 
@@ -71,7 +75,21 @@ var io = require('socket.io')(server);
 
 io.on('connection', function(socket) 
 {
-	console.log('Player Connected');
+	Sockets[socket.id] = socket;
+	console.log(socket.id);
+	socket.emit('CheckConnection',socket.id);
+	socket.on("ConnectionOK",function (socketID) 
+	{
+		Clients.push(socketID);
+		console.log('Player Connected', socketID , "Nb",Clients.length);
+		if (host == null) 
+		{
+			console.log("emit host");
+			socket.emit("IsHost",true);
+			host = socket.id;
+		}
+		io.emit('PlayersConnected',Clients.length)
+	});
 	socket.on('restartgame', function (data) 
 	{
 		console.log('restartgame');
@@ -79,8 +97,128 @@ io.on('connection', function(socket)
 	});
 	socket.on('disconnect', function (data) 
 	{
+
 		console.log("Player Disconected");
 
 	});
+	socket.on('Ready', function (data) 
+	{
+		console.log('Ready')
+		var length = Clients.length * 2;
+		Players = SetPosition(length);
+		console.log(Players);
+		var mycolors = SetColors();
+		var time = 30
+		for (var i = 0; i < Clients.length; i++) 
+		{
+			var myData = 
+			{
+				id: i,
+				StartPos: Players,
+				Colors: mycolors,
+				Timer: time
+			};
+			Sockets[Clients[i]].emit('StartGame',myData);
+		}
+		// Stop Game
+		setTimeout(function () 
+		{
+			Players = [];
+			Clients = [];
+			Sockets = {};
+			host = null; 
+		}, time * 1000 + 3);
 
+		setTimeout(DropItem, Math.Random.RangeInt(2500,7500,true));
+
+	})
+	socket.on('Move', function (data) 
+ 	{
+ 		//console.log(data);
+ 		//Players[data.id].x = data.x;
+ 		//Players[data.id].y = data.y;
+ 		socket.broadcast.emit('MoveOther',data);
+ 	})
 });
+
+
+
+// Import Random.js
+Math.Random = {};
+Math.Random.RangeInt = function(_min, _max, _isInclusive)
+{
+	if(typeof _min != 'number') PrintErr("Parameter minimum in RangeInt");
+    if(typeof _max != 'number') PrintErr("Parameter maximum in RangeInt");
+    if(typeof _isInclusive != 'boolean') PrintErr("Parameter isInclusive in RangeInt");
+	_isInclusive ? _max++ : _min++;
+	return Math.floor(Math.random() * (_max - _min) + _min); 
+};
+Math.Random.ColorHEX = function() 
+{
+	var letters = [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F'];
+    var color = '#';
+    for (var i = 0; i < 6; i++ )
+    {
+        color += letters[Math.Random.RangeInt(0,letters.length - 1,true)];
+    }
+    return color;
+};
+
+function SetPosition(_length) 
+{
+	var sp = [];
+	for (var i = 0; i < Clients.length; i++) 
+	{
+		var v = {
+			x: Math.Random.RangeInt(0,_length - 1,true),
+			y: Math.Random.RangeInt(0,_length - 1,true)
+		};
+		for (var j = 0; j < sp.length; j++) 
+		{
+			if (sp[j].x == v.x && sp[j].y == v.y) 
+			{
+				i--;
+				break;
+			}
+		}
+		sp.push(v);
+	}
+	return sp;
+}
+function SetColors() 
+{
+	var colors = [];
+	for (var i = 0; i < Clients.length; i++) 
+	{
+		var c =Math.Random.ColorHEX();
+		for (var j = 0; j < colors.length; j++) 
+		{
+			if (colors[j] == c) 
+			{
+				i--;
+				break;
+			}
+		}
+		colors.push(c);
+	}
+	return colors;
+}
+
+function DropItem () 
+{
+	var v = {};
+	console.log(Players.length);
+	v.x = Math.Random.RangeInt(0, Players.length * 2 - 1, true);
+	v.y = Math.Random.RangeInt(0, Players.length * 2 - 1, true);
+
+	for (var i = 0; i < Players.length; i++) 
+	{
+		if (v.x == Players[i].x && v.y == Players[i].y) 
+		{
+			return DropItem;
+		}
+	}
+	io.emit("SetItemPoint",{x: v.x,y: v.y});
+	//console.log(v);
+	setTimeout(DropItem, Math.Random.RangeInt(5000,20000,true));
+}
