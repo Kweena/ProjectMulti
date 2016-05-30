@@ -8,8 +8,12 @@ var path = require("path");
 var fs = require("fs"); 
 
 var Sockets = {};
+<<<<<<< HEAD
 var Clients = [];
 var Players = [];
+=======
+
+>>>>>>> f9537d281cef62fd84addb2fe2591c90476537de
 var host = null;
 
 //console.log("Starting web server at " + serverUrl + ":" + port);
@@ -105,8 +109,9 @@ io.on('connection', function(socket)
 	{
 		console.log('Ready')
 		var length = Clients.length * 2;
+
 		Players = SetPosition(length);
-		console.log(Players);
+
 		var mycolors = SetColors();
 		var time = 30
 		for (var i = 0; i < Clients.length; i++) 
@@ -114,7 +119,9 @@ io.on('connection', function(socket)
 			var myData = 
 			{
 				id: i,
+
 				StartPos: Players,
+
 				Colors: mycolors,
 				Timer: time
 			};
@@ -131,6 +138,7 @@ io.on('connection', function(socket)
 
 		setTimeout(DropItem, Math.Random.RangeInt(2500,7500,true));
 
+
 	})
 	socket.on('Move', function (data) 
  	{
@@ -140,7 +148,6 @@ io.on('connection', function(socket)
  		socket.broadcast.emit('MoveOther',data);
  	})
 });
-
 
 
 // Import Random.js

@@ -76,7 +76,6 @@ function MultiGrid(_parameters)
 				 _self.Items.push(item);
 			});
 
-
 			// operation start
 			 
 			this.AddPlayer();

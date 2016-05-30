@@ -45,6 +45,7 @@ function Title()
 		{
 			Time.SetTimeWhenSceneBegin();
 			// operation start
+
 			var url = 'http://10.10.7.52:8000';
 			socket = io.connect(url);
 			var _self = this;
@@ -80,6 +81,7 @@ function Title()
 
 			socket.on('IsHost', function(_bool)
 			{
+
 				//console.log(_bool)
 				_self.isHost = _bool;
 			});
@@ -87,12 +89,14 @@ function Title()
 			socket.on('PlayersConnected', function(_nbrPlayers) 
 			{
 				_self.nbrPlayers = _nbrPlayers;
+
 				//console.log("P :" + _nbrPlayers);
 
 			});
 
 			socket.on('StartGame', function(_data)
 			{
+
 				//console.log(_data);
 				Scenes["MultiGrid"] = new MultiGrid(_data);
 				Application.LoadedScene = Scenes["MultiGrid"];
